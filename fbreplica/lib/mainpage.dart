@@ -7,11 +7,11 @@ class Mainpage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Story> stories = [
-      Story(imageUrl: 'assets/images/ahc.jpg', userName: 'You'),
-      Story(imageUrl: 'assets/images/user1.jpg', userName: 'Ahmed'),
-      Story(imageUrl: 'assets/images/user2.jpg', userName: 'Sara'),
-      Story(imageUrl: 'assets/images/user3.jpg', userName: 'Ali'),
-      Story(imageUrl: 'assets/images/user4.jpg', userName: 'John'),
+      Story(imageUrl: 'assets/images/1.jpg', userName: 'You'),
+      Story(imageUrl: 'assets/images/2.jpg', userName: 'Sara'),
+      Story(imageUrl: 'assets/images/3.jpg', userName: 'Ahmed'),
+      Story(imageUrl: 'assets/images/4.jpg', userName: 'Alizay'),
+      Story(imageUrl: 'assets/images/5.png', userName: 'Hannah'),
     ];
 
     return Scaffold(
@@ -134,7 +134,7 @@ class Mainpage extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 20),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
