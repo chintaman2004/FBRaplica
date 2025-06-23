@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'story.dart'; // ✅ Your single story file
 
 class Mainpage extends StatelessWidget {
   const Mainpage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final List<Story> stories = [
+      Story(imageUrl: 'assets/images/ahc.jpg', userName: 'You'),
+      Story(imageUrl: 'assets/images/user1.jpg', userName: 'Ahmed'),
+      Story(imageUrl: 'assets/images/user2.jpg', userName: 'Sara'),
+      Story(imageUrl: 'assets/images/user3.jpg', userName: 'Ali'),
+      Story(imageUrl: 'assets/images/user4.jpg', userName: 'John'),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -39,9 +48,7 @@ class Mainpage extends StatelessWidget {
             const SizedBox(height: 10),
             const Divider(thickness: 1, color: Colors.grey),
             const SizedBox(height: 10),
-
             Row(
-              //Row 1
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 IconButton(
@@ -82,7 +89,6 @@ class Mainpage extends StatelessWidget {
                 ),
               ],
             ),
-
             const SizedBox(height: 10),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -109,7 +115,6 @@ class Mainpage extends StatelessWidget {
                       ),
                     ),
                   ),
-
                   const SizedBox(width: 10),
                   Container(
                     height: 40,
@@ -129,7 +134,18 @@ class Mainpage extends StatelessWidget {
                 ],
               ),
             ),
-            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly),
+            const SizedBox(height: 15),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                children: [Expanded(child: StoryWidget(stories: stories))],
+              ),
+            ),
+
+            const SizedBox(height: 10),
+            const Divider(),
+            const SizedBox(height: 20),
+            const Center(child: Text("Feed goes here...")),
           ],
         ),
       ),
