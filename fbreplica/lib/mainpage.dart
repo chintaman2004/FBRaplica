@@ -143,9 +143,6 @@ class Mainpage extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(height: 10),
-            const Divider(),
-            const SizedBox(height: 20),
             TextOnlyPostWidget(
               username: 'Ahmed Hassan',
               timestamp: '5 mins ago',
