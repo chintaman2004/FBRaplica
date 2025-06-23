@@ -1,3 +1,4 @@
+import 'package:fbreplica/post_simple.dart';
 import 'package:flutter/material.dart';
 import 'story.dart'; // ✅ Your single story file
 
@@ -145,7 +146,12 @@ class Mainpage extends StatelessWidget {
             const SizedBox(height: 10),
             const Divider(),
             const SizedBox(height: 20),
-            const Center(child: Text("Feed goes here...")),
+            TextOnlyPostWidget(
+              username: 'Ahmed Hassan',
+              timestamp: '5 mins ago',
+              content: 'Exploring Flutter is fun. Loving the layout system!',
+              profileImage: 'assets/images/ahc.jpg',
+            ),
           ],
         ),
       ),

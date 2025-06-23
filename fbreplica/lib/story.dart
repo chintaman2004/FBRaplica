@@ -17,7 +17,7 @@ class StoryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 170, // Increased for box style
+      height: 150,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -25,12 +25,11 @@ class StoryWidget extends StatelessWidget {
         separatorBuilder: (context, index) => const SizedBox(width: 10),
         itemBuilder: (context, index) {
           final story = stories[index];
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+          return Stack(
             children: [
               Container(
-                height: 120,
-                width: 80,
+                height: 140,
+                width: 90,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   image: DecorationImage(
@@ -39,14 +38,29 @@ class StoryWidget extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(height: 6),
-              SizedBox(
-                width: 80,
-                child: Text(
-                  story.userName,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 13),
+              Positioned(
+                bottom: 6,
+                left: 6,
+                right: 6,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    story.userName,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w500,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.left,
+                  ),
                 ),
               ),
             ],
