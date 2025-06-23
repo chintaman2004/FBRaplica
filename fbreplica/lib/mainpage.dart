@@ -1,4 +1,3 @@
-import 'package:fbreplica/post_pic.dart';
 import 'package:flutter/material.dart';
 
 class Mainpage extends StatelessWidget {
@@ -8,48 +7,129 @@ class Mainpage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('WhatsApp Business'),
         actions: [
-          IconButton(icon: const Icon(Icons.camera_alt), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.search), onPressed: () {}),
-          IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
+          IconButton(
+            icon: const Icon(Icons.add),
+            iconSize: 40,
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.search),
+            iconSize: 40,
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.chat),
+            iconSize: 40,
+            onPressed: () {},
+          ),
         ],
-        titleTextStyle: TextStyle(
-          fontSize: 20,
+        title: const Text('facebook'),
+        titleTextStyle: const TextStyle(
+          fontSize: 40,
           fontWeight: FontWeight.bold,
-          color: Colors.green,
+          color: Colors.blueAccent,
         ),
+        backgroundColor: Colors.white,
       ),
       body: Container(
-        color: Colors.grey[250],
+        color: Colors.white,
         child: ListView(
           children: [
-            postpic(
-              title: 'Ali Chintman',
-              description: 'Business account',
-              tilcolor: Colors.greenAccent,
-              img: "assets/images/bmw.jpg",
+            const SizedBox(height: 10),
+            const Divider(thickness: 1, color: Colors.grey),
+            const SizedBox(height: 10),
+
+            Row(
+              //Row 1
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.home, size: 30, color: Colors.blue),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(
+                    Icons.video_library,
+                    size: 30,
+                    color: Colors.blue,
+                  ),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(Icons.group, size: 30, color: Colors.blue),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(Icons.store, size: 30, color: Colors.blue),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(
+                    Icons.notifications,
+                    size: 30,
+                    color: Colors.blue,
+                  ),
+                  onPressed: () {},
+                ),
+                ClipOval(
+                  child: Image.asset(
+                    'assets/images/ahc.jpg',
+                    height: 40,
+                    width: 40,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ],
             ),
-            postpic(
-              title: 'Umer Farooq',
-              description: 'Personal account',
-              tilcolor: Colors.blueAccent,
-              img: "assets/images/Subaru.png",
+
+            const SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Row(
+                children: [
+                  ClipOval(
+                    child: Image.asset(
+                      'assets/images/ahc.jpg',
+                      height: 40,
+                      width: 40,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: SizedBox(
+                      height: 40,
+                      child: SearchBar(
+                        hintText: 'Search AI',
+                        onSubmitted: (value) {},
+                        textStyle: WidgetStateProperty.all(
+                          const TextStyle(fontSize: 14),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 10),
+                  Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[200],
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.photo_library),
+                      iconSize: 30,
+                      padding: EdgeInsets.zero,
+                      splashRadius: 20,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            postpic(
-              title: 'Iqbal Paya',
-              color: Colors.blueGrey,
-              description: 'personal account',
-              tilcolor: Colors.blueGrey[300],
-              img: "assets/images/Lamb.png",
-            ),
-            customWidget(
-              title: 'Abdul Sattar',
-              color: Colors.red,
-              description: 'personal account',
-              tilcolor: Colors.redAccent,
-              img: "assets/images/Nissan.png",
-            ),
+            Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly),
           ],
         ),
       ),
