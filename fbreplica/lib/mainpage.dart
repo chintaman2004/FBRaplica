@@ -1,42 +1,55 @@
 import 'package:flutter/material.dart';
-import '../widgets/story_card.dart';
-import '../widgets/post_card.dart';
-import '../widgets/status_update.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class MyList extends StatelessWidget {
+  const MyList({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Facebook", style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.blue[800],
-        actions: const [
-          Icon(Icons.search),
-          SizedBox(width: 10),
-          Icon(Icons.message),
-          SizedBox(width: 10),
+        title: Text('WhatsApp Business'),
+        actions: [
+          IconButton(icon: const Icon(Icons.camera_alt), onPressed: () {}),
+          IconButton(icon: const Icon(Icons.search), onPressed: () {}),
+          IconButton(icon: const Icon(Icons.more_vert), onPressed: () {}),
         ],
+        titleTextStyle: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.green,
+        ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: const [
-            StatusUpdate(),
-            Divider(),
-            StorySection(),
-            Divider(),
-            PostCard(
-              username: 'John Doe',
-              timeAgo: '2 hrs ago',
-              postText: 'Hello Facebook!',
-              imageUrl: '',
+      body: Container(
+        color: Colors.grey[250],
+        child: ListView(
+          children: [
+            customWidget(
+              title: 'Ali Chintman',
+              color: Colors.green,
+              description: 'Business account',
+              tilcolor: Colors.greenAccent,
+              img: "assets/images/bmw.jpg",
             ),
-            PostCard(
-              username: 'Jane Smith',
-              timeAgo: '5 hrs ago',
-              postText: 'Nice weather today 🌤️',
-              imageUrl: '',
+            customWidget(
+              title: 'Umer Farooq',
+              color: Colors.blue,
+              description: 'Personal account',
+              tilcolor: Colors.blueAccent,
+              img: "assets/images/Subaru.png",
+            ),
+            customWidget(
+              title: 'Iqbal Paya',
+              color: Colors.blueGrey,
+              description: 'personal account',
+              tilcolor: Colors.blueGrey[300],
+              img: "assets/images/Lamb.png",
+            ),
+            customWidget(
+              title: 'Abdul Sattar',
+              color: Colors.red,
+              description: 'personal account',
+              tilcolor: Colors.redAccent,
+              img: "assets/images/Nissan.png",
             ),
           ],
         ),
