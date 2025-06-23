@@ -1,7 +1,8 @@
+import 'package:fbreplica/post_pic.dart';
 import 'package:flutter/material.dart';
 
-class MyList extends StatelessWidget {
-  const MyList({super.key});
+class Mainpage extends StatelessWidget {
+  const Mainpage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,21 +24,19 @@ class MyList extends StatelessWidget {
         color: Colors.grey[250],
         child: ListView(
           children: [
-            customWidget(
+            postpic(
               title: 'Ali Chintman',
-              color: Colors.green,
               description: 'Business account',
               tilcolor: Colors.greenAccent,
               img: "assets/images/bmw.jpg",
             ),
-            customWidget(
+            postpic(
               title: 'Umer Farooq',
-              color: Colors.blue,
               description: 'Personal account',
               tilcolor: Colors.blueAccent,
               img: "assets/images/Subaru.png",
             ),
-            customWidget(
+            postpic(
               title: 'Iqbal Paya',
               color: Colors.blueGrey,
               description: 'personal account',

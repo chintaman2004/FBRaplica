@@ -1,3 +1,4 @@
+import 'package:fbreplica/mainpage.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      home: Scaffold(body: MainPage()),
+      home: Scaffold(body: Mainpage()),
     );
   }
 }
