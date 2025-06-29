@@ -2,25 +2,40 @@ import 'package:fbreplica/post_pic.dart';
 import 'package:fbreplica/post_simple.dart';
 import 'package:fbreplica/post_vid.dart';
 import 'package:flutter/material.dart';
-import 'story.dart'; // ✅ Your single story file
+import 'story.dart';
 
 class Mainpage extends StatelessWidget {
   const Mainpage({super.key});
 
+  Null get image => null;
+
   @override
   Widget build(BuildContext context) {
-    final List<Story> stories = [
+    List<Story> stories = [
       Story(imageUrl: 'assets/images/1.jpg', userName: 'You'),
       Story(imageUrl: 'assets/images/2.jpg', userName: 'Sara'),
       Story(imageUrl: 'assets/images/3.jpg', userName: 'Ahmed'),
       Story(imageUrl: 'assets/images/4.jpg', userName: 'Alizay'),
       Story(imageUrl: 'assets/images/5.png', userName: 'Hannah'),
       Story(imageUrl: 'assets/images/ford.jpg', userName: 'Ford'),
-      Story(
-        imageUrl:
-            'https://images.pexels.com/photos/32489809/pexels-photo-32489809.jpeg',
-        userName: 'Building',
-      ),
+      Story(imageUrl: 'assets/images/1.jpg', userName: 'Sam'),
+      Story(imageUrl: 'assets/images/2.jpg', userName: 'Rebica'),
+      Story(imageUrl: 'assets/images/3.jpg', userName: 'Sib'),
+      Story(imageUrl: 'assets/images/4.jpg', userName: 'Susan'),
+      Story(imageUrl: 'assets/images/5.png', userName: 'Ryle'),
+      Story(imageUrl: 'assets/images/ford.jpg', userName: 'Mustang'),
+      Story(imageUrl: 'assets/images/1.jpg', userName: 'You'),
+      Story(imageUrl: 'assets/images/2.jpg', userName: 'Sara'),
+      Story(imageUrl: 'assets/images/3.jpg', userName: 'Ahmed'),
+      Story(imageUrl: 'assets/images/4.jpg', userName: 'Alizay'),
+      Story(imageUrl: 'assets/images/5.png', userName: 'Hannah'),
+      Story(imageUrl: 'assets/images/ford.jpg', userName: 'Ford'),
+      Story(imageUrl: 'assets/images/1.jpg', userName: 'Sam'),
+      Story(imageUrl: 'assets/images/2.jpg', userName: 'Rebica'),
+      Story(imageUrl: 'assets/images/3.jpg', userName: 'Sib'),
+      Story(imageUrl: 'assets/images/4.jpg', userName: 'Susan'),
+      Story(imageUrl: 'assets/images/5.png', userName: 'Ryle'),
+      Story(imageUrl: 'assets/images/ford.jpg', userName: 'Mustang'),
     ];
 
     return Scaffold(

@@ -1,4 +1,4 @@
-import 'package:fbreplica/mainpage.dart';
+import 'package:fbreplica/loginscreen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      home: Scaffold(body: Mainpage()),
+      home: Scaffold(body: Loginscreen()),
     );
   }
 }

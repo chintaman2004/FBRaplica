@@ -36,6 +36,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_lints: ^6.0.0
   video_player: ^2.7.0
+  cached_network_image: ^3.3.1
 
 dev_dependencies:
   flutter_test:
@@ -55,7 +56,6 @@ flutter:
   assets:
     - assets/images/
     - assets/videos/
-    - https://images.pexels.com/photos/32489809/pexels-photo-32489809.jpegr
     
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

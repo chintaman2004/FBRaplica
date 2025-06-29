@@ -20,7 +20,6 @@ class StoryWidget extends StatelessWidget {
       height: 150,
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 10),
         itemCount: stories.length,
         separatorBuilder: (context, index) => const SizedBox(width: 10),
         itemBuilder: (context, index) {
