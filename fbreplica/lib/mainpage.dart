@@ -1,4 +1,6 @@
+import 'package:fbreplica/post_pic.dart';
 import 'package:fbreplica/post_simple.dart';
+import 'package:fbreplica/post_vid.dart';
 import 'package:flutter/material.dart';
 import 'story.dart'; // ✅ Your single story file
 
@@ -13,6 +15,7 @@ class Mainpage extends StatelessWidget {
       Story(imageUrl: 'assets/images/3.jpg', userName: 'Ahmed'),
       Story(imageUrl: 'assets/images/4.jpg', userName: 'Alizay'),
       Story(imageUrl: 'assets/images/5.png', userName: 'Hannah'),
+      Story(imageUrl: 'assets/images/ford.jpg', userName: 'Ford'),
     ];
 
     return Scaffold(
@@ -148,6 +151,20 @@ class Mainpage extends StatelessWidget {
               timestamp: '5 mins ago',
               content: 'Exploring Flutter is fun. Loving the layout system!',
               profileImage: 'assets/images/ahc.jpg',
+            ),
+            PostWithImageWidget(
+              username: 'Sara Khan',
+              timestamp: '10 mins ago',
+              content: 'Check out my new Flutter project!',
+              profileImage: 'assets/images/2.jpg',
+              postImage: 'assets/images/mas.jpg',
+            ),
+            PostWithVideoWidget(
+              username: 'Alizay',
+              timestamp: '15 mins ago',
+              content: 'Just uploaded a new video on Flutter development!',
+              profileImage: 'assets/images/4.jpg',
+              videoUrl: 'assets/videos/vid1.mp4',
             ),
           ],
         ),
