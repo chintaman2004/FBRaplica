@@ -16,6 +16,11 @@ class Mainpage extends StatelessWidget {
       Story(imageUrl: 'assets/images/4.jpg', userName: 'Alizay'),
       Story(imageUrl: 'assets/images/5.png', userName: 'Hannah'),
       Story(imageUrl: 'assets/images/ford.jpg', userName: 'Ford'),
+      Story(
+        imageUrl:
+            'https://images.pexels.com/photos/32489809/pexels-photo-32489809.jpeg',
+        userName: 'Building',
+      ),
     ];
 
     return Scaffold(
