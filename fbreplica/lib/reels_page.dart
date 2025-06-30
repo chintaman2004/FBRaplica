@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'mainpage.dart';
 
-// ✅ Inline model class (you can move this to models/reel.dart if needed)
 class Reel {
   final String videoUrl;
   final String username;
@@ -21,15 +21,33 @@ class _ReelsPageState extends State<ReelsPage> {
   final List<Reel> reels = [
     Reel(
       videoUrl:
-          'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+          'https://videos.pexels.com/video-files/3403284/3403284-uhd_1440_2732_25fps.mp4',
       username: '@streetqueen',
       caption: 'Dancing like the city’s watching 🏙️💃',
     ),
     Reel(
       videoUrl:
-          'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+          'https://videos.pexels.com/video-files/4594927/4594927-uhd_1440_2732_25fps.mp4',
       username: '@urbanmoves',
       caption: 'Grace in every frame. Style in every step. ✨',
+    ),
+    Reel(
+      videoUrl:
+          'https://videos.pexels.com/video-files/4008162/4008162-uhd_1440_2732_25fps.mp4',
+      username: '@sweetgirl',
+      caption: 'Every step is refreshing. ✨',
+    ),
+    Reel(
+      videoUrl:
+          'https://videos.pexels.com/video-files/5435292/5435292-uhd_1440_2732_25fps.mp4',
+      username: '@silentkiller',
+      caption: 'Night with Candle ✨',
+    ),
+    Reel(
+      videoUrl:
+          'https://videos.pexels.com/video-files/5427492/5427492-uhd_1440_2732_25fps.mp4',
+      username: '@darkness',
+      caption: 'Light goes dark and my mind activates. ✨',
     ),
   ];
 
@@ -145,6 +163,23 @@ class _ReelsPageState extends State<ReelsPage> {
                     color: Colors.white,
                   ),
                   onPressed: () => _toggleMute(controller),
+                ),
+              ),
+              Positioned(
+                top: 40,
+                left: 16,
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => const Mainpage()),
+                    );
+                  },
                 ),
               ),
             ],
