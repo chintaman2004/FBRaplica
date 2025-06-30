@@ -3,6 +3,7 @@ import 'package:fbreplica/post_simple.dart';
 import 'package:fbreplica/post_vid.dart';
 import 'package:flutter/material.dart';
 import 'story.dart';
+import 'reels_page.dart';
 
 class Mainpage extends StatelessWidget {
   const Mainpage({super.key});
@@ -85,7 +86,14 @@ class Mainpage extends StatelessWidget {
                     size: 30,
                     color: Colors.blue,
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ReelsPage(),
+                      ),
+                    );
+                  },
                 ),
                 IconButton(
                   icon: const Icon(Icons.group, size: 30, color: Colors.blue),
