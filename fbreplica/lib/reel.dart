@@ -1,7 +1,7 @@
 class Reel {
-  final String imageUrl;
+  final String videoUrl;
   final String username;
   final String caption;
 
-  Reel({required this.imageUrl, required this.username, required this.caption});
+  Reel({required this.videoUrl, required this.username, required this.caption});
 }

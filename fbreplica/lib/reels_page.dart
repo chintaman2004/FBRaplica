@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
+// ✅ Inline model class (you can move this to models/reel.dart if needed)
+class Reel {
+  final String videoUrl;
+  final String username;
+  final String caption;
+
+  Reel({required this.videoUrl, required this.username, required this.caption});
+}
+
 class ReelsPage extends StatefulWidget {
   const ReelsPage({super.key});
 
@@ -9,9 +18,19 @@ class ReelsPage extends StatefulWidget {
 }
 
 class _ReelsPageState extends State<ReelsPage> {
-  final List<String> videoUrls = [
-    'https://videos.pexels.com/video-files/5896379/5896379-uhd_1440_2560_24fps.mp4',
-    'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+  final List<Reel> reels = [
+    Reel(
+      videoUrl:
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4',
+      username: '@streetqueen',
+      caption: 'Dancing like the city’s watching 🏙️💃',
+    ),
+    Reel(
+      videoUrl:
+          'https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4',
+      username: '@urbanmoves',
+      caption: 'Grace in every frame. Style in every step. ✨',
+    ),
   ];
 
   final List<VideoPlayerController> _controllers = [];
@@ -20,15 +39,14 @@ class _ReelsPageState extends State<ReelsPage> {
   @override
   void initState() {
     super.initState();
-    for (var url in videoUrls) {
-      final controller = VideoPlayerController.networkUrl(Uri.parse(url))
-        ..setLooping(true);
+    for (var reel in reels) {
+      final controller = VideoPlayerController.networkUrl(
+        Uri.parse(reel.videoUrl),
+      )..setLooping(true);
       _controllers.add(controller);
       controller.initialize().then((_) {
         setState(() {});
-        if (_controllers.length == 1) {
-          controller.play();
-        }
+        if (_controllers.length == 1) controller.play(); // Auto play first
       });
     }
   }
@@ -70,6 +88,7 @@ class _ReelsPageState extends State<ReelsPage> {
         },
         itemBuilder: (context, index) {
           final controller = _controllers[index];
+          final reel = reels[index];
 
           if (!controller.value.isInitialized) {
             return const Center(child: CircularProgressIndicator());
@@ -89,29 +108,31 @@ class _ReelsPageState extends State<ReelsPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '@AhmedHassan',
-                      style: const TextStyle(color: Colors.white, fontSize: 18),
+                      reel.username,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                    const Text(
-                      'Where rhythm meets the streets. 💃🕺\n'
-                      'Style, soul, and a splash of rebellion —\n'
-                      'we dance, we vibe, we reel it all.\n'
-                      'Join the movement. 🎶📲',
-                      style: TextStyle(color: Colors.white),
+                    const SizedBox(height: 4),
+                    Text(
+                      reel.caption,
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ],
                 ),
               ),
-              Positioned(
+              const Positioned(
                 bottom: 80,
                 right: 16,
                 child: Column(
-                  children: const [
-                    Icon(Icons.favorite, color: Colors.white, size: 40),
-                    SizedBox(height: 20),
-                    Icon(Icons.comment, color: Colors.white, size: 40),
-                    SizedBox(height: 20),
-                    Icon(Icons.share, color: Colors.white, size: 40),
+                  children: [
+                    Icon(Icons.favorite, color: Colors.white),
+                    SizedBox(height: 10),
+                    Icon(Icons.comment, color: Colors.white),
+                    SizedBox(height: 10),
+                    Icon(Icons.share, color: Colors.white),
                   ],
                 ),
               ),
