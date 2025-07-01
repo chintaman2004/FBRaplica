@@ -28,65 +28,8 @@ class _MainpageState extends State<Mainpage> {
 
   void addPost(Widget postWidget) {
     setState(() {
-      posts.insert(0, postWidget);
+      posts.insert(0, postWidget); // Add to top of feed
     });
-  }
-
-  void _showPostOptions(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      builder:
-          (_) => Container(
-            padding: const EdgeInsets.all(16),
-            height: 200,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Create Post',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 20),
-                ListTile(
-                  leading: const Icon(Icons.text_fields),
-                  title: const Text('Text Post'),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const PostSimpleForm()),
-                    );
-                    if (result != null) addPost(result);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.image),
-                  title: const Text('Image Post'),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const PostPicForm()),
-                    );
-                    if (result != null) addPost(result);
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.videocam),
-                  title: const Text('Video Post'),
-                  onTap: () async {
-                    Navigator.pop(context);
-                    final result = await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const PostVidForm()),
-                    );
-                    if (result != null) addPost(result);
-                  },
-                ),
-              ],
-            ),
-          ),
-    );
   }
 
   @override
@@ -100,89 +43,159 @@ class _MainpageState extends State<Mainpage> {
         backgroundColor: Colors.white,
         actions: [
           IconButton(
-            icon: const Icon(Icons.add, size: 32),
-            onPressed: () => _showPostOptions(context),
+            icon: const Icon(Icons.add),
+            iconSize: 32,
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                isScrollControlled: true,
+                builder:
+                    (_) => Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 30,
+                        left: 16,
+                        right: 16,
+                        top: 20,
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Text(
+                            'Create Post',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          ListTile(
+                            leading: const Icon(Icons.text_fields),
+                            title: const Text('Text Post'),
+                            onTap: () async {
+                              Navigator.pop(context);
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const PostSimpleForm(),
+                                ),
+                              );
+                              if (result != null) addPost(result);
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.image),
+                            title: const Text('Image Post'),
+                            onTap: () async {
+                              Navigator.pop(context);
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const PostPicForm(),
+                                ),
+                              );
+                              if (result != null) addPost(result);
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.videocam),
+                            title: const Text('Video Post'),
+                            onTap: () async {
+                              Navigator.pop(context);
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const PostVidForm(),
+                                ),
+                              );
+                              if (result != null) addPost(result);
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+              );
+            },
           ),
           IconButton(icon: const Icon(Icons.search), onPressed: () {}),
           IconButton(icon: const Icon(Icons.chat), onPressed: () {}),
         ],
       ),
-      body: Container(
-        color: Colors.white,
-        child: ListView(
-          children: [
-            const Divider(thickness: 1),
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.home, color: Colors.blue),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(Icons.video_library, color: Colors.blue),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const ReelsPage()),
-                    );
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.group, color: Colors.blue),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(Icons.store, color: Colors.blue),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(Icons.notifications, color: Colors.blue),
-                  onPressed: () {},
-                ),
-                const CircleAvatar(
-                  backgroundImage: AssetImage('assets/images/ahc.jpg'),
-                  radius: 18,
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                children: [Expanded(child: StoryWidget(stories: stories))],
+      body: ListView(
+        children: [
+          const Divider(thickness: 1),
+          const SizedBox(height: 8),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.home, color: Colors.blue),
+                onPressed: () {},
               ),
+              IconButton(
+                icon: const Icon(Icons.video_library, color: Colors.blue),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const ReelsPage()),
+                  );
+                },
+              ),
+              IconButton(
+                icon: const Icon(Icons.group, color: Colors.blue),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: const Icon(Icons.store, color: Colors.blue),
+                onPressed: () {},
+              ),
+              IconButton(
+                icon: const Icon(Icons.notifications, color: Colors.blue),
+                onPressed: () {},
+              ),
+              const CircleAvatar(
+                backgroundImage: AssetImage('assets/images/ahc.jpg'),
+                radius: 18,
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              children: [Expanded(child: StoryWidget(stories: stories))],
             ),
-            const SizedBox(height: 10),
+          ),
+          const SizedBox(height: 10),
 
-            /// Initial sample posts
-            TextPostWidget(
-              username: 'Ahmed Hassan',
-              timestamp: '5 mins ago',
-              content: 'Exploring Flutter is fun!',
-              profileImage: 'assets/images/ahc.jpg',
-            ),
-            ImagePostWidget(
-              username: 'Sara',
-              timestamp: '10 mins ago',
-              content: 'My Flutter UI ❤️',
-              profileImage: 'assets/images/2.jpg',
-              postImage: 'assets/images/mas.jpg',
-            ),
-            VideoPostWidget(
-              username: 'Alizay',
-              timestamp: '15 mins ago',
-              content: 'Watch my new dev video!',
-              profileImage: 'assets/images/4.jpg',
-              videoUrl: 'assets/videos/vid1.mp4',
-              postImage: '',
-            ),
+          // Sample static posts
+          TextPostWidget(
+            username: 'Ahmed Hassan',
+            timestamp: '5 mins ago',
+            content: 'Exploring Flutter is fun!',
+            profileImage: 'assets/images/ahc.jpg',
+          ),
+          ImagePostWidget(
+            username: 'Sara',
+            timestamp: '10 mins ago',
+            content: 'My Flutter UI ❤️',
+            profileImage: 'assets/images/2.jpg',
+            postImage: 'assets/images/mas.jpg',
+          ),
+          VideoPostWidget(
+            username: 'Alizay',
+            timestamp: '15 mins ago',
+            content: 'Watch my new dev video!',
+            profileImage: 'assets/images/4.jpg',
+            videoUrl: 'assets/videos/vid1.mp4',
+            postImage: '',
+          ),
 
-            /// Dynamically added posts
-            ...posts,
-          ],
-        ),
+          // New dynamic posts
+          ...posts,
+        ],
       ),
     );
   }
