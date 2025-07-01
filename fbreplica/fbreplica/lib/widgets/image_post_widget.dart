@@ -1,11 +1,15 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
 class ImagePostWidget extends StatelessWidget {
   final String username;
   final String timestamp;
   final String content;
-  final String profileImage;
-  final String postImage;
+  final String profileImage; // asset path for profile image
+  final String?
+  postImagePath; // local file path for picked image (mobile/desktop)
+  final Uint8List? postImageBytes; // image bytes for web
 
   const ImagePostWidget({
     super.key,
@@ -13,32 +17,61 @@ class ImagePostWidget extends StatelessWidget {
     required this.timestamp,
     required this.content,
     required this.profileImage,
-    required this.postImage,
+    this.postImagePath,
+    this.postImageBytes,
+    required String postImage,
   });
 
   @override
   Widget build(BuildContext context) {
+    Widget imageWidget;
+
+    if (postImageBytes != null) {
+      // Display image from bytes (web)
+      imageWidget = Image.memory(
+        postImageBytes!,
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: 200,
+      );
+    } else if (postImagePath != null && postImagePath!.isNotEmpty) {
+      // Display image from file path (mobile/desktop)
+      imageWidget = Image.file(
+        File(postImagePath!),
+        fit: BoxFit.cover,
+        width: double.infinity,
+        height: 200,
+      );
+    } else {
+      // Placeholder or default image if no image selected
+      imageWidget = Container(
+        width: double.infinity,
+        height: 200,
+        color: Colors.grey[300],
+        child: const Icon(
+          Icons.image_not_supported,
+          size: 80,
+          color: Colors.grey,
+        ),
+      );
+    }
+
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      elevation: 3,
       child: Padding(
         padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile Row
+            // Header with profile image and username
             Row(
               children: [
-                ClipOval(
-                  child: Image.asset(
-                    profileImage,
-                    height: 40,
-                    width: 40,
-                    fit: BoxFit.cover,
-                  ),
+                CircleAvatar(
+                  backgroundImage: AssetImage(profileImage),
+                  radius: 20,
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 12),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -51,30 +84,22 @@ class ImagePostWidget extends StatelessWidget {
                     ),
                     Text(
                       timestamp,
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      style: const TextStyle(color: Colors.grey, fontSize: 12),
                     ),
                   ],
                 ),
               ],
             ),
+            const SizedBox(height: 12),
 
-            const SizedBox(height: 10),
+            // Post content text
+            Text(content, style: const TextStyle(fontSize: 14)),
+            const SizedBox(height: 12),
 
-            // Post Content
-            if (content.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Text(content, style: const TextStyle(fontSize: 15)),
-              ),
-
-            // Post Image
+            // Post image
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
-                postImage,
-                fit: BoxFit.cover,
-                width: double.infinity,
-              ),
+              child: imageWidget,
             ),
           ],
         ),
