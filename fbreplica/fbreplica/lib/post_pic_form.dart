@@ -1,6 +1,7 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
+import 'file_picker_helper.dart'; // Import the helper
 import 'widgets/image_post_widget.dart';
 
 class PostPicForm extends StatefulWidget {
@@ -12,15 +13,25 @@ class PostPicForm extends StatefulWidget {
 
 class _PostPicFormState extends State<PostPicForm> {
   final TextEditingController _controller = TextEditingController();
-  File? _selectedImageFile; // For desktop/mobile
-  String? _selectedImagePath; // For web or fallback
+
+  File? _selectedImageFile;
+  Uint8List? _selectedImageBytes;
+
+  Future<void> _pickImage() async {
+    final picked = await FilePickerHelper.pickImage();
+    if (picked != null) {
+      setState(() {
+        _selectedImageFile = picked.file;
+        _selectedImageBytes = picked.bytes;
+      });
+    }
+  }
 
   void _submitPost() {
     final content = _controller.text.trim();
     if (content.isEmpty) return;
 
-    if (_selectedImageFile == null && _selectedImagePath == null) {
-      // No image selected, you can show a warning or proceed with default image
+    if (_selectedImageFile == null && _selectedImageBytes == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select an image before posting.')),
       );
@@ -35,48 +46,27 @@ class _PostPicFormState extends State<PostPicForm> {
         content: content,
         profileImage: 'assets/images/ahc.jpg',
         postImage:
-            _selectedImagePath ??
             _selectedImageFile?.path ??
-            'assets/images/mas.jpg',
+            '', // For web, handle differently if needed
       ),
     );
-  }
-
-  Future<void> _pickImage() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-    );
-
-    if (result != null && result.files.isNotEmpty) {
-      // For web, path might be null, use bytes or name instead
-      if (result.files.single.path != null) {
-        setState(() {
-          _selectedImageFile = File(result.files.single.path!);
-          _selectedImagePath = null;
-        });
-      } else {
-        // Web fallback: use bytes or name
-        setState(() {
-          _selectedImagePath = result.files.single.name; // or handle bytes
-          _selectedImageFile = null;
-        });
-      }
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     Widget imageWidget;
-
-    if (_selectedImageFile != null) {
+    if (_selectedImageBytes != null) {
+      imageWidget = Image.memory(
+        _selectedImageBytes!,
+        fit: BoxFit.cover,
+        width: double.infinity,
+      );
+    } else if (_selectedImageFile != null) {
       imageWidget = Image.file(
         _selectedImageFile!,
         fit: BoxFit.cover,
         width: double.infinity,
       );
-    } else if (_selectedImagePath != null) {
-      // For web, you might want to handle differently
-      imageWidget = Text('Selected image: $_selectedImagePath');
     } else {
       imageWidget = Image.asset(
         'assets/images/mas.jpg',

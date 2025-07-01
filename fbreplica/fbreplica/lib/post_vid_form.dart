@@ -1,6 +1,7 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
-import 'package:file_picker/file_picker.dart';
+import 'file_picker_helper.dart'; // Import the helper
 import 'widgets/video_post_widget.dart';
 
 class PostVidForm extends StatefulWidget {
@@ -12,14 +13,25 @@ class PostVidForm extends StatefulWidget {
 
 class _PostVidFormState extends State<PostVidForm> {
   final TextEditingController _controller = TextEditingController();
+
   File? _selectedVideoFile;
-  String? _selectedVideoPath;
+  Uint8List? _selectedVideoBytes;
+
+  Future<void> _pickVideo() async {
+    final picked = await FilePickerHelper.pickVideo();
+    if (picked != null) {
+      setState(() {
+        _selectedVideoFile = picked.file;
+        _selectedVideoBytes = picked.bytes;
+      });
+    }
+  }
 
   void _submitPost() {
     final content = _controller.text.trim();
     if (content.isEmpty) return;
 
-    if (_selectedVideoFile == null && _selectedVideoPath == null) {
+    if (_selectedVideoFile == null && _selectedVideoBytes == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select a video before posting.')),
       );
@@ -34,52 +46,26 @@ class _PostVidFormState extends State<PostVidForm> {
         content: content,
         profileImage: 'assets/images/ahc.jpg',
         videoUrl:
-            _selectedVideoPath ??
             _selectedVideoFile?.path ??
-            'assets/videos/vid1.mp4',
-        postImage: '', // optionally add a thumbnail here
+            '', // For web, handle differently if needed
+        postImage: '', // Optionally add a thumbnail
       ),
     );
-  }
-
-  Future<void> _pickVideo() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.video,
-    );
-
-    if (result != null && result.files.isNotEmpty) {
-      if (result.files.single.path != null) {
-        setState(() {
-          _selectedVideoFile = File(result.files.single.path!);
-          _selectedVideoPath = null;
-        });
-      } else {
-        setState(() {
-          _selectedVideoPath = result.files.single.name;
-          _selectedVideoFile = null;
-        });
-      }
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     Widget videoPreview;
-
-    if (_selectedVideoFile != null) {
+    if (_selectedVideoBytes != null) {
       videoPreview = Center(
         child: Text(
-          'Selected video:\n${_selectedVideoFile!.path.split('/').last}',
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 16),
+          'Selected video: ${_selectedVideoBytes!.lengthInBytes} bytes',
         ),
       );
-    } else if (_selectedVideoPath != null) {
+    } else if (_selectedVideoFile != null) {
       videoPreview = Center(
         child: Text(
-          'Selected video:\n$_selectedVideoPath',
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 16),
+          'Selected video: ${_selectedVideoFile!.path.split('/').last}',
         ),
       );
     } else {
