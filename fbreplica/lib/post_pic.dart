@@ -8,6 +8,7 @@ class ImagePostPage extends StatelessWidget {
     required String profileImage,
     required String postImage,
     required String content,
+    required String videoUrl,
   });
 
   @override

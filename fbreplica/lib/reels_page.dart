@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
-import 'mainpage.dart';
 
 class Reel {
   final String videoUrl;
@@ -61,11 +60,16 @@ class _ReelsPageState extends State<ReelsPage> {
       final controller = VideoPlayerController.networkUrl(
         Uri.parse(reel.videoUrl),
       )..setLooping(true);
-      _controllers.add(controller);
+
       controller.initialize().then((_) {
+        controller.setVolume(1); // make sure volume is on
         setState(() {});
-        if (_controllers.length == 1) controller.play(); // Auto play first
+        if (_controllers.isEmpty) {
+          controller.play(); // autoplay first video
+        }
       });
+
+      _controllers.add(controller);
     }
   }
 
@@ -108,82 +112,81 @@ class _ReelsPageState extends State<ReelsPage> {
           final controller = _controllers[index];
           final reel = reels[index];
 
-          if (!controller.value.isInitialized) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          return Stack(
-            fit: StackFit.expand,
-            children: [
-              AspectRatio(
-                aspectRatio: controller.value.aspectRatio,
-                child: VideoPlayer(controller),
-              ),
-              Positioned(
-                bottom: 80,
-                left: 16,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      reel.username,
-                      style: const TextStyle(
+          return controller.value.isInitialized
+              ? Stack(
+                fit: StackFit.expand,
+                children: [
+                  FittedBox(
+                    fit: BoxFit.cover,
+                    child: SizedBox(
+                      width: controller.value.size.width,
+                      height: controller.value.size.height,
+                      child: VideoPlayer(controller),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 80,
+                    left: 16,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          reel.username,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          reel.caption,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Positioned(
+                    bottom: 80,
+                    right: 16,
+                    child: Column(
+                      children: [
+                        Icon(Icons.favorite, color: Colors.white),
+                        SizedBox(height: 10),
+                        Icon(Icons.comment, color: Colors.white),
+                        SizedBox(height: 10),
+                        Icon(Icons.share, color: Colors.white),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    top: 40,
+                    right: 16,
+                    child: IconButton(
+                      icon: Icon(
+                        isMuted ? Icons.volume_off : Icons.volume_up,
                         color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
                       ),
+                      onPressed: () => _toggleMute(controller),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      reel.caption,
-                      style: const TextStyle(color: Colors.white),
+                  ),
+                  Positioned(
+                    top: 40,
+                    left: 16,
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        size: 28,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
                     ),
-                  ],
-                ),
-              ),
-              const Positioned(
-                bottom: 80,
-                right: 16,
-                child: Column(
-                  children: [
-                    Icon(Icons.favorite, color: Colors.white),
-                    SizedBox(height: 10),
-                    Icon(Icons.comment, color: Colors.white),
-                    SizedBox(height: 10),
-                    Icon(Icons.share, color: Colors.white),
-                  ],
-                ),
-              ),
-              Positioned(
-                top: 40,
-                right: 16,
-                child: IconButton(
-                  icon: Icon(
-                    isMuted ? Icons.volume_off : Icons.volume_up,
-                    color: Colors.white,
                   ),
-                  onPressed: () => _toggleMute(controller),
-                ),
-              ),
-              Positioned(
-                top: 40,
-                left: 16,
-                child: IconButton(
-                  icon: const Icon(
-                    Icons.arrow_back,
-                    color: Colors.white,
-                    size: 28,
-                  ),
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (_) => const Mainpage()),
-                    );
-                  },
-                ),
-              ),
-            ],
-          );
+                ],
+              )
+              : const Center(child: CircularProgressIndicator());
         },
       ),
     );

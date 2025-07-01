@@ -1,28 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:fbreplica/post_simple.dart';
-import 'package:fbreplica/post_pic.dart';
-import 'package:fbreplica/post_vid.dart';
 import 'story.dart';
 import 'reels_page.dart';
+import 'post_card_text.dart';
+import 'post_card_image.dart';
+import 'post_card_video.dart';
+import 'post_simple.dart';
+import 'post_pic.dart';
+import 'post_vid.dart';
 
 class Mainpage extends StatelessWidget {
   const Mainpage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    List<Story> stories = [
+    final List<Story> stories = [
       Story(imageUrl: 'assets/images/1.jpg', userName: 'You'),
       Story(imageUrl: 'assets/images/2.jpg', userName: 'Sara'),
       Story(imageUrl: 'assets/images/3.jpg', userName: 'Ahmed'),
       Story(imageUrl: 'assets/images/4.jpg', userName: 'Alizay'),
-      Story(imageUrl: 'assets/images/5.png', userName: 'Hannah'),
-      Story(imageUrl: 'assets/images/ford.jpg', userName: 'Ford'),
-      Story(imageUrl: 'assets/images/1.jpg', userName: 'Sam'),
-      Story(imageUrl: 'assets/images/2.jpg', userName: 'Rebica'),
-      Story(imageUrl: 'assets/images/3.jpg', userName: 'Sib'),
-      Story(imageUrl: 'assets/images/4.jpg', userName: 'Susan'),
-      Story(imageUrl: 'assets/images/5.png', userName: 'Ryle'),
-      Story(imageUrl: 'assets/images/ford.jpg', userName: 'Mustang'),
     ];
 
     return Scaffold(
@@ -38,17 +33,23 @@ class Mainpage extends StatelessWidget {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add),
-            iconSize: 40,
+            icon: const Icon(Icons.add, size: 40),
             onPressed: () {
               showModalBottomSheet(
                 context: context,
+                isScrollControlled: true, // <-- important
+                shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
                 builder:
-                    (_) => Container(
-                      padding: const EdgeInsets.all(16),
-                      height: 200,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                    (context) => Padding(
+                      padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).viewInsets.bottom,
+                        left: 16,
+                        right: 16,
+                        top: 16,
+                      ),
+                      child: Wrap(
                         children: [
                           const Text(
                             'Create Post',
@@ -67,11 +68,11 @@ class Mainpage extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder:
-                                      (_) => const TextOnlyPostPage(
-                                        username: '',
-                                        timestamp: '',
+                                      (_) => TextOnlyPostPage(
+                                        username: 'Your Name',
+                                        timestamp: 'Just now',
                                         content: '',
-                                        profileImage: '',
+                                        profileImage: 'assets/images/ahc.jpg',
                                       ),
                                 ),
                               );
@@ -86,12 +87,13 @@ class Mainpage extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder:
-                                      (_) => const ImagePostPage(
-                                        username: '',
-                                        timestamp: '',
+                                      (_) => ImagePostPage(
+                                        username: 'Your Name',
+                                        timestamp: 'Just now',
                                         content: '',
-                                        profileImage: '',
-                                        postImage: '',
+                                        profileImage: 'assets/images/ahc.jpg',
+                                        postImage: 'assets/images/mas.jpg',
+                                        videoUrl: '',
                                       ),
                                 ),
                               );
@@ -106,12 +108,13 @@ class Mainpage extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder:
-                                      (_) => const VideoPostPage(
-                                        timestamp: '',
-                                        username: '',
+                                      (_) => VideoPostPage(
+                                        username: 'Your Name',
+                                        timestamp: 'Just now',
                                         content: '',
-                                        profileImage: '',
-                                        videoUrl: '',
+                                        profileImage: 'assets/images/ahc.jpg',
+                                        videoUrl: 'assets/videos/vid1.mp4',
+                                        postImage: '',
                                       ),
                                 ),
                               );
@@ -124,147 +127,140 @@ class Mainpage extends StatelessWidget {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.search),
-            iconSize: 40,
+            icon: const Icon(Icons.search, size: 40),
             onPressed: () {},
           ),
-          IconButton(
-            icon: const Icon(Icons.chat),
-            iconSize: 40,
-            onPressed: () {},
+          IconButton(icon: const Icon(Icons.chat, size: 40), onPressed: () {}),
+        ],
+      ),
+      body: ListView(
+        children: [
+          const SizedBox(height: 10),
+          const Divider(thickness: 1, color: Colors.grey),
+          const SizedBox(height: 10),
+
+          // Bottom nav buttons
+          _buildNavigationRow(context),
+
+          const SizedBox(height: 10),
+
+          // Search bar
+          _buildSearchBar(),
+
+          const SizedBox(height: 20),
+
+          // Stories
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: StoryWidget(stories: stories),
+          ),
+
+          const SizedBox(height: 10),
+
+          // Posts feed using card widgets
+          PostCardText(
+            username: 'Ahmed Hassan',
+            timestamp: '5 mins ago',
+            content: 'Exploring Flutter is fun. Loving the layout system!',
+            profileImage: 'assets/images/ahc.jpg',
+          ),
+          PostCardImage(
+            username: 'Sara Khan',
+            timestamp: '10 mins ago',
+            content: 'Check out my new Flutter project!',
+            profileImage: 'assets/images/2.jpg',
+            postImage: 'assets/images/mas.jpg',
+          ),
+          PostCardVideo(
+            username: 'Alizay',
+            timestamp: '15 mins ago',
+            content: 'Just uploaded a new video on Flutter development!',
+            profileImage: 'assets/images/4.jpg',
+            videoUrl: 'assets/videos/vid1.mp4',
           ),
         ],
       ),
-      body: Container(
-        color: Colors.white,
-        child: ListView(
-          children: [
-            const SizedBox(height: 10),
-            const Divider(thickness: 1, color: Colors.grey),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.home, size: 30, color: Colors.blue),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(
-                    Icons.video_library,
-                    size: 30,
-                    color: Colors.blue,
-                  ),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ReelsPage(),
-                      ),
-                    );
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.group, size: 30, color: Colors.blue),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(Icons.store, size: 30, color: Colors.blue),
-                  onPressed: () {},
-                ),
-                IconButton(
-                  icon: const Icon(
-                    Icons.notifications,
-                    size: 30,
-                    color: Colors.blue,
-                  ),
-                  onPressed: () {},
-                ),
-                ClipOval(
-                  child: Image.asset(
-                    'assets/images/ahc.jpg',
-                    height: 40,
-                    width: 40,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                children: [
-                  ClipOval(
-                    child: Image.asset(
-                      'assets/images/ahc.jpg',
-                      height: 40,
-                      width: 40,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: SizedBox(
-                      height: 40,
-                      child: SearchBar(
-                        hintText: 'Search AI',
-                        onSubmitted: (value) {},
-                        textStyle: WidgetStateProperty.all(
-                          const TextStyle(fontSize: 14),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                    height: 40,
-                    width: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      shape: BoxShape.circle,
-                    ),
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.photo_library),
-                      iconSize: 30,
-                      padding: EdgeInsets.zero,
-                      splashRadius: 20,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                children: [Expanded(child: StoryWidget(stories: stories))],
-              ),
-            ),
-            // Sample feed posts
-            TextOnlyPostPage(
-              username: 'Ahmed Hassan',
-              timestamp: '5 mins ago',
-              content: 'Exploring Flutter is fun. Loving the layout system!',
-              profileImage: 'assets/images/ahc.jpg',
-            ),
-            ImagePostPage(
-              username: 'Sara Khan',
-              timestamp: '10 mins ago',
-              content: 'Check out my new Flutter project!',
-              profileImage: 'assets/images/2.jpg',
-              postImage: 'assets/images/mas.jpg',
-            ),
-            VideoPostPage(
-              username: 'Alizay',
-              timestamp: '15 mins ago',
-              content: 'Just uploaded a new video on Flutter development!',
-              profileImage: 'assets/images/4.jpg',
-              videoUrl: 'assets/videos/vid1.mp4',
-            ),
-          ],
+    );
+  }
+
+  Widget _buildNavigationRow(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.home, color: Colors.blue),
+          onPressed: () {},
         ),
+        IconButton(
+          icon: const Icon(Icons.video_library, color: Colors.blue),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const ReelsPage()),
+            );
+          },
+        ),
+        IconButton(
+          icon: const Icon(Icons.group, color: Colors.blue),
+          onPressed: () {},
+        ),
+        IconButton(
+          icon: const Icon(Icons.store, color: Colors.blue),
+          onPressed: () {},
+        ),
+        IconButton(
+          icon: const Icon(Icons.notifications, color: Colors.blue),
+          onPressed: () {},
+        ),
+        ClipOval(
+          child: Image.asset(
+            'assets/images/ahc.jpg',
+            height: 40,
+            width: 40,
+            fit: BoxFit.cover,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSearchBar() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: Row(
+        children: [
+          ClipOval(
+            child: Image.asset(
+              'assets/images/ahc.jpg',
+              height: 40,
+              width: 40,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              height: 40,
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: const Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'Search AI',
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 10),
+          IconButton(
+            icon: const Icon(Icons.photo_library, size: 30),
+            onPressed: () {},
+          ),
+        ],
       ),
     );
   }
