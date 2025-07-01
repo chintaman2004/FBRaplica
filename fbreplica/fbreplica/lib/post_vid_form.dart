@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
 import 'widgets/video_post_widget.dart';
 
 class PostVidForm extends StatefulWidget {
@@ -9,123 +11,125 @@ class PostVidForm extends StatefulWidget {
 }
 
 class _PostVidFormState extends State<PostVidForm> {
-  final TextEditingController _contentController = TextEditingController();
-
-  String? _selectedVideo;
-  String? _selectedImage;
-
-  final List<String> availableVideos = [
-    'assets/videos/vid1.mp4',
-    'assets/videos/vid2.mp4',
-  ];
-
-  final List<String> availableImages = [
-    'assets/images/mas.jpg',
-    'assets/images/4.jpg',
-    'assets/images/2.jpg',
-  ];
+  final TextEditingController _controller = TextEditingController();
+  File? _selectedVideoFile;
+  String? _selectedVideoPath;
 
   void _submitPost() {
-    final content = _contentController.text.trim();
+    final content = _controller.text.trim();
+    if (content.isEmpty) return;
 
-    if (_selectedVideo != null) {
-      Navigator.pop(
-        context,
-        VideoPostWidget(
-          username: 'Your Name',
-          timestamp: 'Just now',
-          content: content,
-          profileImage: 'assets/images/ahc.jpg',
-          videoUrl: _selectedVideo!,
-          postImage: _selectedImage ?? '',
-        ),
+    if (_selectedVideoFile == null && _selectedVideoPath == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select a video before posting.')),
       );
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Please select a video')));
+      return;
+    }
+
+    Navigator.pop(
+      context,
+      VideoPostWidget(
+        username: 'Your Name',
+        timestamp: 'Just now',
+        content: content,
+        profileImage: 'assets/images/ahc.jpg',
+        videoUrl:
+            _selectedVideoPath ??
+            _selectedVideoFile?.path ??
+            'assets/videos/vid1.mp4',
+        postImage: '', // optionally add a thumbnail here
+      ),
+    );
+  }
+
+  Future<void> _pickVideo() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.video,
+    );
+
+    if (result != null && result.files.isNotEmpty) {
+      if (result.files.single.path != null) {
+        setState(() {
+          _selectedVideoFile = File(result.files.single.path!);
+          _selectedVideoPath = null;
+        });
+      } else {
+        setState(() {
+          _selectedVideoPath = result.files.single.name;
+          _selectedVideoFile = null;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    Widget videoPreview;
+
+    if (_selectedVideoFile != null) {
+      videoPreview = Center(
+        child: Text(
+          'Selected video:\n${_selectedVideoFile!.path.split('/').last}',
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 16),
+        ),
+      );
+    } else if (_selectedVideoPath != null) {
+      videoPreview = Center(
+        child: Text(
+          'Selected video:\n$_selectedVideoPath',
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 16),
+        ),
+      );
+    } else {
+      videoPreview = const Center(
+        child: Icon(Icons.videocam, size: 60, color: Colors.grey),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Video Post'),
         actions: [
           TextButton(
             onPressed: _submitPost,
-            child: const Text(
-              'Post',
-              style: TextStyle(color: Colors.white, fontSize: 16),
-            ),
+            child: const Text('Post', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: ListView(
+        child: Column(
           children: [
             TextField(
-              controller: _contentController,
-              maxLines: null,
+              controller: _controller,
+              maxLines: 3,
               decoration: const InputDecoration(
-                hintText: 'Say something...',
+                hintText: 'Say something about the video...',
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 20),
-            const Text(
-              'Select Video:',
-              style: TextStyle(fontWeight: FontWeight.bold),
+            const SizedBox(height: 16),
+            Container(
+              height: 200,
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: videoPreview,
+              ),
             ),
-            Wrap(
-              spacing: 10,
-              children:
-                  availableVideos.map((videoPath) {
-                    return ChoiceChip(
-                      label: Text(videoPath.split('/').last),
-                      selected: _selectedVideo == videoPath,
-                      onSelected: (_) {
-                        setState(() {
-                          _selectedVideo = videoPath;
-                        });
-                      },
-                    );
-                  }).toList(),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: _pickVideo,
+              icon: const Icon(Icons.video_library),
+              label: const Text('Select Video from Computer'),
             ),
-            const SizedBox(height: 20),
-            const Text('Optional Cover Image:'),
-            Wrap(
-              spacing: 10,
-              children:
-                  availableImages.map((img) {
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedImage = img;
-                        });
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color:
-                                _selectedImage == img
-                                    ? Colors.blue
-                                    : Colors.transparent,
-                            width: 3,
-                          ),
-                        ),
-                        child: Image.asset(
-                          img,
-                          height: 80,
-                          width: 80,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-            ),
+            const SizedBox(height: 16),
+            ElevatedButton(onPressed: _submitPost, child: const Text('Post')),
           ],
         ),
       ),
