@@ -1,14 +1,12 @@
-import 'package:fbreplica/post_pic.dart';
-import 'package:fbreplica/post_simple.dart';
-import 'package:fbreplica/post_vid.dart';
 import 'package:flutter/material.dart';
+import 'package:fbreplica/post_simple.dart';
+import 'package:fbreplica/post_pic.dart';
+import 'package:fbreplica/post_vid.dart';
 import 'story.dart';
 import 'reels_page.dart';
 
 class Mainpage extends StatelessWidget {
   const Mainpage({super.key});
-
-  Null get image => null;
 
   @override
   Widget build(BuildContext context) {
@@ -25,27 +23,105 @@ class Mainpage extends StatelessWidget {
       Story(imageUrl: 'assets/images/4.jpg', userName: 'Susan'),
       Story(imageUrl: 'assets/images/5.png', userName: 'Ryle'),
       Story(imageUrl: 'assets/images/ford.jpg', userName: 'Mustang'),
-      Story(imageUrl: 'assets/images/1.jpg', userName: 'You'),
-      Story(imageUrl: 'assets/images/2.jpg', userName: 'Sara'),
-      Story(imageUrl: 'assets/images/3.jpg', userName: 'Ahmed'),
-      Story(imageUrl: 'assets/images/4.jpg', userName: 'Alizay'),
-      Story(imageUrl: 'assets/images/5.png', userName: 'Hannah'),
-      Story(imageUrl: 'assets/images/ford.jpg', userName: 'Ford'),
-      Story(imageUrl: 'assets/images/1.jpg', userName: 'Sam'),
-      Story(imageUrl: 'assets/images/2.jpg', userName: 'Rebica'),
-      Story(imageUrl: 'assets/images/3.jpg', userName: 'Sib'),
-      Story(imageUrl: 'assets/images/4.jpg', userName: 'Susan'),
-      Story(imageUrl: 'assets/images/5.png', userName: 'Ryle'),
-      Story(imageUrl: 'assets/images/ford.jpg', userName: 'Mustang'),
     ];
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: const Text(
+          'facebook',
+          style: TextStyle(
+            fontSize: 40,
+            fontWeight: FontWeight.bold,
+            color: Colors.blueAccent,
+          ),
+        ),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
             iconSize: 40,
-            onPressed: () {},
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder:
+                    (_) => Container(
+                      padding: const EdgeInsets.all(16),
+                      height: 200,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Create Post',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          ListTile(
+                            leading: const Icon(Icons.text_fields),
+                            title: const Text('Text Post'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (_) => const TextOnlyPostPage(
+                                        username: '',
+                                        timestamp: '',
+                                        content: '',
+                                        profileImage: '',
+                                      ),
+                                ),
+                              );
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.image),
+                            title: const Text('Image Post'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (_) => const ImagePostPage(
+                                        username: '',
+                                        timestamp: '',
+                                        content: '',
+                                        profileImage: '',
+                                        postImage: '',
+                                      ),
+                                ),
+                              );
+                            },
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.videocam),
+                            title: const Text('Video Post'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (_) => const VideoPostPage(
+                                        timestamp: '',
+                                        username: '',
+                                        content: '',
+                                        profileImage: '',
+                                        videoUrl: '',
+                                      ),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+              );
+            },
           ),
           IconButton(
             icon: const Icon(Icons.search),
@@ -58,13 +134,6 @@ class Mainpage extends StatelessWidget {
             onPressed: () {},
           ),
         ],
-        title: const Text('facebook'),
-        titleTextStyle: const TextStyle(
-          fontSize: 40,
-          fontWeight: FontWeight.bold,
-          color: Colors.blueAccent,
-        ),
-        backgroundColor: Colors.white,
       ),
       body: Container(
         color: Colors.white,
@@ -173,21 +242,21 @@ class Mainpage extends StatelessWidget {
                 children: [Expanded(child: StoryWidget(stories: stories))],
               ),
             ),
-
-            TextOnlyPostWidget(
+            // Sample feed posts
+            TextOnlyPostPage(
               username: 'Ahmed Hassan',
               timestamp: '5 mins ago',
               content: 'Exploring Flutter is fun. Loving the layout system!',
               profileImage: 'assets/images/ahc.jpg',
             ),
-            PostWithImageWidget(
+            ImagePostPage(
               username: 'Sara Khan',
               timestamp: '10 mins ago',
               content: 'Check out my new Flutter project!',
               profileImage: 'assets/images/2.jpg',
               postImage: 'assets/images/mas.jpg',
             ),
-            PostWithVideoWidget(
+            VideoPostPage(
               username: 'Alizay',
               timestamp: '15 mins ago',
               content: 'Just uploaded a new video on Flutter development!',
