@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:fbreplica/post_simple.dart';
-import 'package:fbreplica/post_pic.dart';
-import 'package:fbreplica/post_vid.dart';
+import 'post_simple_form.dart';
+import 'post_pic_form.dart';
+import 'post_vid_form.dart';
 import 'story.dart';
 import 'reels_page.dart';
+import 'widgets/text_post_widget.dart';
+import 'widgets/image_post_widget.dart';
+import 'widgets/video_post_widget.dart';
 
 class Mainpage extends StatefulWidget {
   const Mainpage({super.key});
@@ -13,7 +16,7 @@ class Mainpage extends StatefulWidget {
 }
 
 class _MainpageState extends State<Mainpage> {
-  final List<Widget> userPosts = [];
+  final List<Widget> posts = [];
 
   final List<Story> stories = [
     Story(imageUrl: 'assets/images/1.jpg', userName: 'You'),
@@ -21,16 +24,15 @@ class _MainpageState extends State<Mainpage> {
     Story(imageUrl: 'assets/images/3.jpg', userName: 'Ahmed'),
     Story(imageUrl: 'assets/images/4.jpg', userName: 'Alizay'),
     Story(imageUrl: 'assets/images/5.png', userName: 'Hannah'),
-    Story(imageUrl: 'assets/images/ford.jpg', userName: 'Ford'),
-    Story(imageUrl: 'assets/images/1.jpg', userName: 'Sam'),
-    Story(imageUrl: 'assets/images/2.jpg', userName: 'Rebica'),
-    Story(imageUrl: 'assets/images/3.jpg', userName: 'Sib'),
-    Story(imageUrl: 'assets/images/4.jpg', userName: 'Susan'),
-    Story(imageUrl: 'assets/images/5.png', userName: 'Ryle'),
-    Story(imageUrl: 'assets/images/ford.jpg', userName: 'Mustang'),
   ];
 
-  void _openPostOptions() {
+  void addPost(Widget postWidget) {
+    setState(() {
+      posts.insert(0, postWidget);
+    });
+  }
+
+  void _showPostOptions(BuildContext context) {
     showModalBottomSheet(
       context: context,
       builder:
@@ -48,59 +50,37 @@ class _MainpageState extends State<Mainpage> {
                 ListTile(
                   leading: const Icon(Icons.text_fields),
                   title: const Text('Text Post'),
-                  onTap: () {
+                  onTap: () async {
                     Navigator.pop(context);
-                    setState(() {
-                      userPosts.insert(
-                        0,
-                        TextOnlyPostPage(
-                          username: 'Your Name',
-                          timestamp: 'Just now',
-                          content: 'This is a new text post!',
-                          profileImage: 'assets/images/ahc.jpg',
-                        ),
-                      );
-                    });
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const PostSimpleForm()),
+                    );
+                    if (result != null) addPost(result);
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.image),
                   title: const Text('Image Post'),
-                  onTap: () {
+                  onTap: () async {
                     Navigator.pop(context);
-                    setState(() {
-                      userPosts.insert(
-                        0,
-                        ImagePostPage(
-                          username: 'Your Name',
-                          timestamp: 'Just now',
-                          content: 'Image uploaded!',
-                          profileImage: 'assets/images/ahc.jpg',
-                          postImage: 'assets/images/mas.jpg',
-                          videoUrl: '',
-                        ),
-                      );
-                    });
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const PostPicForm()),
+                    );
+                    if (result != null) addPost(result);
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.videocam),
                   title: const Text('Video Post'),
-                  onTap: () {
+                  onTap: () async {
                     Navigator.pop(context);
-                    setState(() {
-                      userPosts.insert(
-                        0,
-                        VideoPostPage(
-                          username: 'Your Name',
-                          timestamp: 'Just now',
-                          content: 'New video!',
-                          profileImage: 'assets/images/ahc.jpg',
-                          videoUrl: 'assets/videos/vid1.mp4',
-                          postImage: '',
-                        ),
-                      );
-                    });
+                    final result = await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const PostVidForm()),
+                    );
+                    if (result != null) addPost(result);
                   },
                 ),
               ],
@@ -113,155 +93,96 @@ class _MainpageState extends State<Mainpage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         title: const Text(
           'facebook',
-          style: TextStyle(
-            fontSize: 40,
-            fontWeight: FontWeight.bold,
-            color: Colors.blueAccent,
-          ),
+          style: TextStyle(fontSize: 32, color: Colors.blueAccent),
         ),
+        backgroundColor: Colors.white,
         actions: [
           IconButton(
-            icon: const Icon(Icons.add, size: 40),
-            onPressed: _openPostOptions,
+            icon: const Icon(Icons.add, size: 32),
+            onPressed: () => _showPostOptions(context),
           ),
-          IconButton(
-            icon: const Icon(Icons.search, size: 40),
-            onPressed: () {},
-          ),
-          IconButton(icon: const Icon(Icons.chat, size: 40), onPressed: () {}),
+          IconButton(icon: const Icon(Icons.search), onPressed: () {}),
+          IconButton(icon: const Icon(Icons.chat), onPressed: () {}),
         ],
       ),
-      body: ListView(
-        children: [
-          const SizedBox(height: 10),
-          const Divider(thickness: 1, color: Colors.grey),
-          const SizedBox(height: 10),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.home, size: 30, color: Colors.blue),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: const Icon(
-                  Icons.video_library,
-                  size: 30,
-                  color: Colors.blue,
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const ReelsPage()),
-                  );
-                },
-              ),
-              IconButton(
-                icon: const Icon(Icons.group, size: 30, color: Colors.blue),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: const Icon(Icons.store, size: 30, color: Colors.blue),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: const Icon(
-                  Icons.notifications,
-                  size: 30,
-                  color: Colors.blue,
-                ),
-                onPressed: () {},
-              ),
-              ClipOval(
-                child: Image.asset(
-                  'assets/images/ahc.jpg',
-                  height: 40,
-                  width: 40,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(
+      body: Container(
+        color: Colors.white,
+        child: ListView(
+          children: [
+            const Divider(thickness: 1),
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ClipOval(
-                  child: Image.asset(
-                    'assets/images/ahc.jpg',
-                    height: 40,
-                    width: 40,
-                    fit: BoxFit.cover,
-                  ),
+                IconButton(
+                  icon: const Icon(Icons.home, color: Colors.blue),
+                  onPressed: () {},
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: SizedBox(
-                    height: 40,
-                    child: SearchBar(
-                      hintText: 'Search AI',
-                      onSubmitted: (value) {},
-                      textStyle: WidgetStateProperty.all(
-                        const TextStyle(fontSize: 14),
-                      ),
-                    ),
-                  ),
+                IconButton(
+                  icon: const Icon(Icons.video_library, color: Colors.blue),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const ReelsPage()),
+                    );
+                  },
                 ),
-                const SizedBox(width: 10),
-                Container(
-                  height: 40,
-                  width: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    shape: BoxShape.circle,
-                  ),
-                  child: IconButton(
-                    icon: const Icon(Icons.photo_library),
-                    iconSize: 30,
-                    onPressed: () {},
-                    padding: EdgeInsets.zero,
-                    splashRadius: 20,
-                  ),
+                IconButton(
+                  icon: const Icon(Icons.group, color: Colors.blue),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(Icons.store, color: Colors.blue),
+                  onPressed: () {},
+                ),
+                IconButton(
+                  icon: const Icon(Icons.notifications, color: Colors.blue),
+                  onPressed: () {},
+                ),
+                const CircleAvatar(
+                  backgroundImage: AssetImage('assets/images/ahc.jpg'),
+                  radius: 18,
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Row(
-              children: [Expanded(child: StoryWidget(stories: stories))],
+            const SizedBox(height: 8),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                children: [Expanded(child: StoryWidget(stories: stories))],
+              ),
             ),
-          ),
-          ...userPosts, // ✅ Add user-generated posts
-          // Static sample posts:
-          TextOnlyPostPage(
-            username: 'Ahmed Hassan',
-            timestamp: '5 mins ago',
-            content: 'Exploring Flutter is fun. Loving the layout system!',
-            profileImage: 'assets/images/ahc.jpg',
-          ),
-          ImagePostPage(
-            username: 'Sara Khan',
-            timestamp: '10 mins ago',
-            content: 'Check out my new Flutter project!',
-            profileImage: 'assets/images/2.jpg',
-            postImage: 'assets/images/mas.jpg',
-            videoUrl: '',
-          ),
-          VideoPostPage(
-            username: 'Alizay',
-            timestamp: '15 mins ago',
-            content: 'Just uploaded a new video on Flutter development!',
-            profileImage: 'assets/images/4.jpg',
-            videoUrl: 'assets/videos/vid1.mp4',
-            postImage: '',
-          ),
-        ],
+            const SizedBox(height: 10),
+
+            /// Initial sample posts
+            TextPostWidget(
+              username: 'Ahmed Hassan',
+              timestamp: '5 mins ago',
+              content: 'Exploring Flutter is fun!',
+              profileImage: 'assets/images/ahc.jpg',
+            ),
+            ImagePostWidget(
+              username: 'Sara',
+              timestamp: '10 mins ago',
+              content: 'My Flutter UI ❤️',
+              profileImage: 'assets/images/2.jpg',
+              postImage: 'assets/images/mas.jpg',
+            ),
+            VideoPostWidget(
+              username: 'Alizay',
+              timestamp: '15 mins ago',
+              content: 'Watch my new dev video!',
+              profileImage: 'assets/images/4.jpg',
+              videoUrl: 'assets/videos/vid1.mp4',
+              postImage: '',
+            ),
+
+            /// Dynamically added posts
+            ...posts,
+          ],
+        ),
       ),
     );
   }
