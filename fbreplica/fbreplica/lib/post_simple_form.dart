@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'widgets/text_post_widget.dart';
+import 'widgets/text_post_widget.dart'; // Ensure this path is correct
 
 class PostSimpleForm extends StatefulWidget {
   const PostSimpleForm({super.key});
@@ -12,32 +12,24 @@ class _PostSimpleFormState extends State<PostSimpleForm> {
   final TextEditingController _controller = TextEditingController();
 
   void _submitPost() {
-    final content = _controller.text.trim();
-    if (content.isEmpty) return;
-
-    Navigator.pop(
-      context,
-      TextPostWidget(
-        username: 'Your Name',
+    final text = _controller.text.trim();
+    if (text.isNotEmpty) {
+      // Create the widget to return
+      final newPost = TextPostWidget(
+        username: 'Ahmed Hassan',
         timestamp: 'Just now',
-        content: content,
+        content: text,
         profileImage: 'assets/images/ahc.jpg',
-      ),
-    );
+      );
+
+      Navigator.pop(context, newPost); // Return it to MainPage
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create Text Post'),
-        actions: [
-          TextButton(
-            onPressed: _submitPost,
-            child: const Text('Post', style: TextStyle(color: Colors.white)),
-          ),
-        ],
-      ),
+      appBar: AppBar(title: const Text("Create Text Post")),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -50,8 +42,12 @@ class _PostSimpleFormState extends State<PostSimpleForm> {
                 border: OutlineInputBorder(),
               ),
             ),
-            const SizedBox(height: 16),
-            ElevatedButton(onPressed: _submitPost, child: const Text('Post')),
+            const SizedBox(height: 20),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.send),
+              label: const Text("Post"),
+              onPressed: _submitPost,
+            ),
           ],
         ),
       ),
