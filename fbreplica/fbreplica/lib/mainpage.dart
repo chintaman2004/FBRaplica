@@ -56,7 +56,7 @@ class _MainpageState extends State<Mainpage> {
                     if (result != null) addPost(result);
                   },
                 ),
-                // You can add image/video post options later
+                // You can add image & video post forms here later
               ],
             ),
           ),
@@ -88,15 +88,17 @@ class _MainpageState extends State<Mainpage> {
           const Divider(thickness: 1),
           const SizedBox(height: 10),
 
-          // Navigation Icons Row
+          // Navigation Icons Row (Updated size)
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               IconButton(
+                iconSize: 36,
                 icon: const Icon(Icons.home, color: Colors.blue),
                 onPressed: () {},
               ),
               IconButton(
+                iconSize: 36,
                 icon: const Icon(Icons.video_library, color: Colors.blue),
                 onPressed: () {
                   Navigator.push(
@@ -106,99 +108,106 @@ class _MainpageState extends State<Mainpage> {
                 },
               ),
               IconButton(
+                iconSize: 36,
                 icon: const Icon(Icons.group, color: Colors.blue),
                 onPressed: () {},
               ),
               IconButton(
+                iconSize: 36,
                 icon: const Icon(Icons.store, color: Colors.blue),
                 onPressed: () {},
               ),
               IconButton(
+                iconSize: 36,
                 icon: const Icon(Icons.notifications, color: Colors.blue),
                 onPressed: () {},
               ),
               const CircleAvatar(
                 backgroundImage: AssetImage('assets/images/ahc.jpg'),
-                radius: 18,
+                radius: 20,
               ),
             ],
           ),
 
           const SizedBox(height: 10),
 
-          // Safe Stories Placeholder
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Container(
-              height: 100,
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.circular(10),
-              ),
-              alignment: Alignment.center,
-              child: const Text(
-                "Stories Placeholder",
-                style: TextStyle(fontSize: 16),
-              ),
+          // Facebook-style Rectangular Stories
+          SizedBox(
+            height: 160,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              children: const [
+                _StoryCard(image: 'assets/images/ahc.jpg', name: 'You'),
+                _StoryCard(image: 'assets/images/2.jpg', name: 'Sara'),
+                _StoryCard(image: 'assets/images/3.jpg', name: 'Ahmed'),
+                _StoryCard(image: 'assets/images/4.jpg', name: 'Alizay'),
+              ],
             ),
           ),
 
           const SizedBox(height: 10),
 
-          // Static Post 1 - Text Post
-          Builder(
-            builder: (context) {
-              try {
-                return TextPostWidget(
-                  username: 'Ahmed Hassan',
-                  timestamp: '5 mins ago',
-                  content: 'Exploring Flutter is fun!',
-                  profileImage: 'assets/images/ahc.jpg',
-                );
-              } catch (e) {
-                return Text("Error loading TextPostWidget: $e");
-              }
-            },
+          // Static Text Post
+          TextPostWidget(
+            username: 'Ahmed Hassan',
+            timestamp: '5 mins ago',
+            content: 'Exploring Flutter is fun!',
+            profileImage: 'assets/images/ahc.jpg',
           ),
 
-          // Static Post 2 - Image Post
-          Builder(
-            builder: (context) {
-              try {
-                return ImagePostWidget(
-                  username: 'Sara',
-                  timestamp: '10 mins ago',
-                  content: 'My Flutter UI ❤️',
-                  profileImage: 'assets/images/2.jpg',
-                  postImage: 'assets/images/mas.jpg',
-                );
-              } catch (e) {
-                return Text("Error loading ImagePostWidget: $e");
-              }
-            },
+          // Static Image Post
+          ImagePostWidget(
+            username: 'Sara',
+            timestamp: '10 mins ago',
+            content: 'My Flutter UI ❤️',
+            profileImage: 'assets/images/2.jpg',
+            postImage: 'assets/images/mas.jpg',
           ),
 
-          // Static Post 3 - Video Post
-          Builder(
-            builder: (context) {
-              try {
-                return VideoPostWidget(
-                  username: 'Alizay',
-                  timestamp: '15 mins ago',
-                  content: 'Watch my new dev video!',
-                  profileImage: 'assets/images/4.jpg',
-                  videoUrl: 'assets/videos/vid1.mp4',
-                  postImage: '', // or a thumbnail if you want
-                );
-              } catch (e) {
-                return Text("Error loading VideoPostWidget: $e");
-              }
-            },
+          // Static Video Post
+          VideoPostWidget(
+            username: 'Alizay',
+            timestamp: '15 mins ago',
+            content: 'Watch my new dev video!',
+            profileImage: 'assets/images/4.jpg',
+            videoUrl: 'assets/videos/vid1.mp4',
+            postImage: '',
           ),
 
-          // Dynamic User-Created Posts (if any)
+          // User-added dynamic posts
           ...posts,
         ],
+      ),
+    );
+  }
+}
+
+// Story card widget (rectangle style)
+class _StoryCard extends StatelessWidget {
+  final String image;
+  final String name;
+
+  const _StoryCard({required this.image, required this.name});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 100,
+      margin: const EdgeInsets.only(right: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        image: DecorationImage(image: AssetImage(image), fit: BoxFit.cover),
+      ),
+      alignment: Alignment.bottomLeft,
+      padding: const EdgeInsets.all(6),
+      child: Text(
+        name,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          backgroundColor: Colors.black54,
+        ),
       ),
     );
   }

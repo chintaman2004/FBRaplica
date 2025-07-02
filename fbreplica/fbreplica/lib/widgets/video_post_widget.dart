@@ -1,7 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
-import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -10,9 +6,8 @@ class VideoPostWidget extends StatefulWidget {
   final String timestamp;
   final String content;
   final String profileImage;
-  final String videoUrl; // For mobile/desktop: file path or network URL
-  final Uint8List? videoBytes; // For web: video data as bytes
-  final String? postImage; // Optional thumbnail image asset path or URL
+  final String videoUrl;
+  final String postImage; // optional thumbnail
 
   const VideoPostWidget({
     super.key,
@@ -21,8 +16,7 @@ class VideoPostWidget extends StatefulWidget {
     required this.content,
     required this.profileImage,
     required this.videoUrl,
-    this.videoBytes,
-    this.postImage,
+    this.postImage = '',
   });
 
   @override
@@ -31,148 +25,84 @@ class VideoPostWidget extends StatefulWidget {
 
 class _VideoPostWidgetState extends State<VideoPostWidget> {
   late VideoPlayerController _controller;
-  bool _isMuted = false;
-  bool _isInitialized = false;
+  bool _initialized = false;
 
   @override
   void initState() {
     super.initState();
-
-    if (kIsWeb && widget.videoBytes != null) {
-      // For web, VideoPlayerController.file is not supported with bytes directly.
-      // You need to create a blob URL or upload the video and use network URL.
-      // Here, we show a placeholder and recommend uploading video to server.
-      // For demonstration, we will not initialize video player with bytes.
-      _isInitialized = false;
-    } else {
-      // For mobile/desktop or network URL
-      if (widget.videoUrl.startsWith('http')) {
-        _controller = VideoPlayerController.network(widget.videoUrl);
-      } else {
-        _controller = VideoPlayerController.file(File(widget.videoUrl));
-      }
-
-      _controller.initialize().then((_) {
+    _controller = VideoPlayerController.asset(widget.videoUrl)
+      ..initialize().then((_) {
         setState(() {
-          _isInitialized = true;
+          _initialized = true;
         });
-        _controller.setLooping(true);
-        _controller.play();
       });
-    }
   }
 
   @override
   void dispose() {
-    if (!_controller.value.isInitialized) {
-      // If controller was never initialized, avoid disposing null
-      return super.dispose();
-    }
     _controller.dispose();
     super.dispose();
   }
 
-  void _toggleMute() {
+  void _togglePlay() {
     setState(() {
-      _isMuted = !_isMuted;
-      _controller.setVolume(_isMuted ? 0 : 1);
+      _controller.value.isPlaying ? _controller.pause() : _controller.play();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Widget videoContent;
-
-    if (kIsWeb && widget.videoBytes != null) {
-      // On web, show a placeholder because playing video from bytes requires extra setup
-      videoContent = Container(
-        height: 200,
-        color: Colors.black12,
-        child: const Center(
-          child: Text(
-            'Video playback from local bytes is not supported on web.\nPlease upload video and use network URL.',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.black54),
-          ),
-        ),
-      );
-    } else if (_isInitialized) {
-      videoContent = Stack(
-        alignment: Alignment.bottomRight,
-        children: [
-          AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: VideoPlayer(_controller),
-          ),
-          IconButton(
-            icon: Icon(
-              _isMuted ? Icons.volume_off : Icons.volume_up,
-              color: Colors.white,
-            ),
-            onPressed: _toggleMute,
-          ),
-        ],
-      );
-    } else {
-      videoContent = const SizedBox(
-        height: 200,
-        child: Center(child: CircularProgressIndicator()),
-      );
-    }
-
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      elevation: 2,
+      elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Profile row
-            Row(
-              children: [
-                ClipOval(
-                  child: Image.asset(
-                    widget.profileImage,
-                    height: 40,
-                    width: 40,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header
+          ListTile(
+            leading: CircleAvatar(
+              backgroundImage: AssetImage(widget.profileImage),
+            ),
+            title: Text(
+              widget.username,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            subtitle: Text(widget.timestamp),
+          ),
+
+          // Content
+          if (widget.content.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: Text(widget.content),
+            ),
+
+          const SizedBox(height: 8),
+
+          // Video
+          _initialized
+              ? AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: Stack(
+                  alignment: Alignment.center,
                   children: [
-                    Text(
-                      widget.username,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                    VideoPlayer(_controller),
+                    IconButton(
+                      icon: Icon(
+                        _controller.value.isPlaying
+                            ? Icons.pause_circle_filled
+                            : Icons.play_circle_fill,
+                        size: 48,
+                        color: Colors.white,
                       ),
-                    ),
-                    Text(
-                      widget.timestamp,
-                      style: const TextStyle(fontSize: 12, color: Colors.grey),
+                      onPressed: _togglePlay,
                     ),
                   ],
                 ),
-              ],
-            ),
-
-            const SizedBox(height: 10),
-
-            // Post text
-            if (widget.content.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Text(widget.content),
-              ),
-
-            // Video player or placeholder
-            videoContent,
-          ],
-        ),
+              )
+              : const Center(child: CircularProgressIndicator()),
+        ],
       ),
     );
   }
