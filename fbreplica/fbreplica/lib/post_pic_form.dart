@@ -1,5 +1,5 @@
+// lib/post_pic_form.dart
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'file_picker_helper.dart';
 import 'widgets/image_post_widget.dart';
 
@@ -24,52 +24,45 @@ class _PostPicFormState extends State<PostPicForm> {
   void _submitPost() {
     if (_pickedImage == null) return;
 
-    final widgetToReturn = ImagePostWidget(
+    final post = ImagePostWidget(
       username: 'You',
       timestamp: 'Just now',
       content: _contentController.text,
       profileImage: 'assets/images/ahc.jpg',
-      postImage: _pickedImage!.file?.path ?? '', // Only valid for non-web
+      postImage: _pickedImage!.file?.path,
+      postBytes: _pickedImage!.bytes,
     );
 
-    Navigator.pop(context, widgetToReturn);
+    Navigator.pop(context, post);
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Create Image Post")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: _contentController,
-              maxLines: 2,
-              decoration: const InputDecoration(
-                hintText: 'Say something...',
-                border: OutlineInputBorder(),
-              ),
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Create Image Post')),
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          TextField(
+            controller: _contentController,
+            decoration: const InputDecoration(labelText: 'Write something...'),
+            maxLines: 2,
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: _pickImage,
+            icon: const Icon(Icons.image),
+            label: const Text('Pick Image'),
+          ),
+          if (_pickedImage != null)
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Text("📷 Selected: ${_pickedImage!.name}"),
             ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _pickImage,
-              icon: const Icon(Icons.image),
-              label: const Text("Pick Image"),
-            ),
-            const SizedBox(height: 16),
-            if (_pickedImage != null)
-              kIsWeb
-                  ? Image.memory(_pickedImage!.bytes!)
-                  : Image.file(_pickedImage!.file!, height: 200),
-            const Spacer(),
-            ElevatedButton(
-              onPressed: _pickedImage != null ? _submitPost : null,
-              child: const Text("Post"),
-            ),
-          ],
-        ),
+          const Spacer(),
+          ElevatedButton(onPressed: _submitPost, child: const Text('Post')),
+        ],
       ),
-    );
-  }
+    ),
+  );
 }

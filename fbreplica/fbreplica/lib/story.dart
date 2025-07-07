@@ -47,7 +47,7 @@ class StoryWidget extends StatelessWidget {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.transparent,
+                    color: Colors.black54,
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(

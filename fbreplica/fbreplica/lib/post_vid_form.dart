@@ -1,3 +1,4 @@
+// lib/post_vid_form.dart
 import 'package:flutter/material.dart';
 import 'file_picker_helper.dart';
 import 'widgets/video_post_widget.dart';
@@ -23,51 +24,46 @@ class _PostVidFormState extends State<PostVidForm> {
   void _submitPost() {
     if (_pickedVideo == null) return;
 
-    final widgetToReturn = VideoPostWidget(
+    final post = VideoPostWidget(
       username: 'You',
       timestamp: 'Just now',
       content: _contentController.text,
       profileImage: 'assets/images/ahc.jpg',
       videoUrl: _pickedVideo!.file?.path ?? '',
-      postImage: '', // You can provide a thumbnail later
+      videoBytes: _pickedVideo!.bytes,
+      postImage: '',
     );
 
-    Navigator.pop(context, widgetToReturn);
+    Navigator.pop(context, post);
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Create Video Post")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: _contentController,
-              maxLines: 2,
-              decoration: const InputDecoration(
-                hintText: 'Say something...',
-                border: OutlineInputBorder(),
-              ),
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Create Video Post')),
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          TextField(
+            controller: _contentController,
+            decoration: const InputDecoration(labelText: 'Write something...'),
+            maxLines: 2,
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: _pickVideo,
+            icon: const Icon(Icons.video_library),
+            label: const Text('Pick Video'),
+          ),
+          if (_pickedVideo != null)
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Text("🎥 Selected: ${_pickedVideo!.name}"),
             ),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _pickVideo,
-              icon: const Icon(Icons.videocam),
-              label: const Text("Pick Video"),
-            ),
-            const SizedBox(height: 16),
-            if (_pickedVideo != null)
-              Text("Video selected: ${_pickedVideo!.name}"),
-            const Spacer(),
-            ElevatedButton(
-              onPressed: _pickedVideo != null ? _submitPost : null,
-              child: const Text("Post"),
-            ),
-          ],
-        ),
+          const Spacer(),
+          ElevatedButton(onPressed: _submitPost, child: const Text('Post')),
+        ],
       ),
-    );
-  }
+    ),
+  );
 }

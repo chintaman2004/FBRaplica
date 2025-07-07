@@ -1,20 +1,17 @@
-// ignore_for_file: strict_top_level_inference, must_be_immutable, non_constant_identifier_names
+// ignore_for_file: must_be_immutable
 
-import 'package:fbreplica/mainpage.dart';
 import 'package:flutter/material.dart';
-
-void main() {
-  runApp(Loginscreen());
-}
+import 'package:fbreplica/mainpage.dart';
 
 class Loginscreen extends StatelessWidget {
   Loginscreen({super.key});
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   void login(BuildContext context) {
-    if (usernameController.text == ("abc@abc.com") &&
-        passwordController.text == ("123")) {
+    if (usernameController.text == "abc@abc.com" &&
+        passwordController.text == "123") {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => Mainpage()),

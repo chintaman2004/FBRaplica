@@ -1,5 +1,6 @@
+// lib/post_simple_form.dart
 import 'package:flutter/material.dart';
-import 'widgets/text_post_widget.dart'; // Ensure this path is correct
+import 'widgets/text_post_widget.dart';
 
 class PostSimpleForm extends StatefulWidget {
   const PostSimpleForm({super.key});
@@ -9,48 +10,37 @@ class PostSimpleForm extends StatefulWidget {
 }
 
 class _PostSimpleFormState extends State<PostSimpleForm> {
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _contentController = TextEditingController();
 
   void _submitPost() {
-    final text = _controller.text.trim();
-    if (text.isNotEmpty) {
-      // Create the widget to return
-      final newPost = TextPostWidget(
-        username: 'Ahmed Hassan',
-        timestamp: 'Just now',
-        content: text,
-        profileImage: 'assets/images/ahc.jpg',
-      );
+    if (_contentController.text.trim().isEmpty) return;
 
-      Navigator.pop(context, newPost); // Return it to MainPage
-    }
+    final post = TextPostWidget(
+      username: 'You',
+      timestamp: 'Just now',
+      content: _contentController.text,
+      profileImage: 'assets/images/ahc.jpg',
+    );
+
+    Navigator.pop(context, post);
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Create Text Post")),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: _controller,
-              maxLines: 5,
-              decoration: const InputDecoration(
-                hintText: "What's on your mind?",
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.send),
-              label: const Text("Post"),
-              onPressed: _submitPost,
-            ),
-          ],
-        ),
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Create Text Post')),
+    body: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          TextField(
+            controller: _contentController,
+            decoration: const InputDecoration(labelText: 'Write something...'),
+            maxLines: 4,
+          ),
+          const Spacer(),
+          ElevatedButton(onPressed: _submitPost, child: const Text('Post')),
+        ],
       ),
-    );
-  }
+    ),
+  );
 }
