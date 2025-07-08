@@ -1,13 +1,22 @@
+// reels_page.dart
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class Reel {
   final String username;
-  final String videoPath; // Local asset or file path
-  final Uint8List? videoBytes; // For web
+  final String videoPath;
+  final Uint8List? videoBytes;
+  final String profileImage; // New
 
-  Reel({required this.username, required this.videoPath, this.videoBytes});
+  Reel({
+    required this.username,
+    required this.videoPath,
+    this.videoBytes,
+    required this.profileImage,
+  });
 }
 
 class ReelsPage extends StatelessWidget {
@@ -16,9 +25,18 @@ class ReelsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<Reel> demoReels = [
-      Reel(username: 'Ahmed', videoPath: 'assets/videos/vid1.mp4'),
-      Reel(username: 'Sara', videoPath: 'assets/videos/vid2.mp4'),
-      // Add more if you like
+      Reel(
+        username: 'Ahmed',
+        videoPath:
+            'https://videos.pexels.com/video-files/7195645/7195645-uhd_1440_2732_25fps.mp4',
+        profileImage: 'assets/images/ahc.jpg',
+      ),
+      Reel(
+        username: 'Sara',
+        videoPath:
+            'https://videos.pexels.com/video-files/7605030/7605030-uhd_1440_2732_25fps.mp4',
+        profileImage: 'assets/images/2.jpg',
+      ),
     ];
 
     return Scaffold(
@@ -55,12 +73,7 @@ class _ReelPlayerState extends State<ReelPlayer> {
   void initState() {
     super.initState();
 
-    if (kIsWeb) {
-      // Web video playback from local bytes not supported
-      return;
-    }
-
-    _controller = VideoPlayerController.asset(widget.reel.videoPath);
+    _controller = VideoPlayerController.network(widget.reel.videoPath);
     _controller!.initialize().then((_) {
       setState(() {});
       _controller!.setLooping(true);
@@ -76,18 +89,6 @@ class _ReelPlayerState extends State<ReelPlayer> {
 
   @override
   Widget build(BuildContext context) {
-    if (kIsWeb) {
-      return const Center(
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Text(
-            "⚠️ Video reels not supported on Flutter Web using local files.\nTry running on mobile or desktop.",
-            textAlign: TextAlign.center,
-          ),
-        ),
-      );
-    }
-
     if (_controller == null || !_controller!.value.isInitialized) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -106,14 +107,23 @@ class _ReelPlayerState extends State<ReelPlayer> {
         Positioned(
           bottom: 40,
           left: 20,
-          child: Text(
-            widget.reel.username,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              shadows: [Shadow(blurRadius: 6, color: Colors.black)],
-            ),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 20,
+                backgroundImage: AssetImage(widget.reel.profileImage),
+              ),
+              const SizedBox(width: 10),
+              Text(
+                widget.reel.username,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  shadows: [Shadow(blurRadius: 6, color: Colors.black)],
+                ),
+              ),
+            ],
           ),
         ),
       ],

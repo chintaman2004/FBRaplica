@@ -28,7 +28,7 @@ class _MainpageState extends State<Mainpage> {
 
   void addPost(Widget postWidget) {
     setState(() {
-      posts.insert(0, postWidget); // Add to top of feed
+      posts.insert(0, postWidget); // New post at top
     });
   }
 
@@ -79,7 +79,7 @@ class _MainpageState extends State<Mainpage> {
                               final result = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => const PostSimpleForm(),
+                                  builder: (context) => const PostSimpleForm(),
                                 ),
                               );
                               if (result != null) addPost(result);
@@ -93,7 +93,7 @@ class _MainpageState extends State<Mainpage> {
                               final result = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => const PostPicForm(),
+                                  builder: (context) => const PostPicForm(),
                                 ),
                               );
                               if (result != null) addPost(result);
@@ -107,7 +107,7 @@ class _MainpageState extends State<Mainpage> {
                               final result = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => const PostVidForm(),
+                                  builder: (context) => const PostVidForm(),
                                 ),
                               );
                               if (result != null) addPost(result);
@@ -164,9 +164,7 @@ class _MainpageState extends State<Mainpage> {
           const SizedBox(height: 8),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Row(
-              children: [Expanded(child: StoryWidget(stories: stories))],
-            ),
+            child: StoryWidget(stories: stories),
           ),
           const SizedBox(height: 10),
 
@@ -193,7 +191,7 @@ class _MainpageState extends State<Mainpage> {
             postImage: '',
           ),
 
-          // New dynamic posts
+          // Dynamic user-generated posts
           ...posts,
         ],
       ),

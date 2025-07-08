@@ -20,13 +20,20 @@ class ImagePostWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget img;
+
     if (kIsWeb && postBytes != null) {
       img = Image.memory(postBytes!, fit: BoxFit.cover, width: double.infinity);
-    } else if (!kIsWeb && postImage != null && File(postImage!).existsSync()) {
+    } else if (!kIsWeb && postImage != null) {
       img = Image.file(
         File(postImage!),
         fit: BoxFit.cover,
         width: double.infinity,
+        errorBuilder: (context, error, stackTrace) {
+          return const Padding(
+            padding: EdgeInsets.all(12),
+            child: Text("⚠️ Failed to load image"),
+          );
+        },
       );
     } else {
       img = const Padding(
