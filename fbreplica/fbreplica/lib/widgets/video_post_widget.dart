@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPostWidget extends StatefulWidget {
-  final String username, timestamp, content, profileImage;
+  final String username;
+  final String timestamp;
+  final String content;
+  final String profileImage;
   final String videoUrl; // for mobile/desktop
   final Uint8List? videoBytes; // for web
 

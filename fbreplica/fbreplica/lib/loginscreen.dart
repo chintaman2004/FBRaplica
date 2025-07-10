@@ -14,7 +14,7 @@ class Loginscreen extends StatelessWidget {
         passwordController.text == "123") {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Mainpage()),
+        MaterialPageRoute(builder: (context) => MainPage()),
       );
     } else {
       showDialog(

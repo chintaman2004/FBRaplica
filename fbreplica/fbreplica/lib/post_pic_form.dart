@@ -1,4 +1,5 @@
-// lib/post_pic_form.dart
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'file_picker_helper.dart';
 import 'widgets/image_post_widget.dart';
@@ -11,58 +12,75 @@ class PostPicForm extends StatefulWidget {
 }
 
 class _PostPicFormState extends State<PostPicForm> {
-  final TextEditingController _contentController = TextEditingController();
-  PickedFile? _pickedImage;
+  final TextEditingController _captionController = TextEditingController();
+  PickedFile? _pickedFile;
 
   void _pickImage() async {
-    final image = await FilePickerHelper.pickImage();
-    if (image != null) {
-      setState(() => _pickedImage = image);
+    final result = await FilePickerHelper.pickImage();
+
+    if (result != null) {
+      setState(() {
+        _pickedFile = result;
+      });
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("No image selected")));
     }
   }
 
   void _submitPost() {
-    if (_pickedImage == null) return;
+    if (_pickedFile == null) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text("Please select an image")));
+      return;
+    }
 
     final post = ImagePostWidget(
-      username: 'You',
-      timestamp: 'Just now',
-      content: _contentController.text,
+      username: "You",
+      timestamp: "Just now",
+      content: _captionController.text.trim(),
       profileImage: 'assets/images/ahc.jpg',
-      postImage: _pickedImage!.file?.path,
-      postBytes: _pickedImage!.bytes,
+      postImage: _pickedFile!.file?.path,
+      postBytes: _pickedFile!.bytes,
     );
 
     Navigator.pop(context, post);
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Create Image Post')),
-    body: Padding(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        children: [
-          TextField(
-            controller: _contentController,
-            decoration: const InputDecoration(labelText: 'Write something...'),
-            maxLines: 2,
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton.icon(
-            onPressed: _pickImage,
-            icon: const Icon(Icons.image),
-            label: const Text('Pick Image'),
-          ),
-          if (_pickedImage != null)
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Text("📷 Selected: ${_pickedImage!.name}"),
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text("Create Image Post")),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          children: [
+            TextField(
+              controller: _captionController,
+              decoration: const InputDecoration(
+                labelText: 'Write a caption...',
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 2,
             ),
-          const Spacer(),
-          ElevatedButton(onPressed: _submitPost, child: const Text('Post')),
-        ],
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: _pickImage,
+              icon: const Icon(Icons.image),
+              label: const Text("Pick Image"),
+            ),
+            if (_pickedFile != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 12),
+                child: Text("📷 Selected: ${_pickedFile!.name}"),
+              ),
+            const Spacer(),
+            ElevatedButton(onPressed: _submitPost, child: const Text("Post")),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

@@ -20,7 +20,7 @@ class Reel {
 }
 
 class ReelsPage extends StatelessWidget {
-  const ReelsPage({super.key});
+  const ReelsPage({super.key, required void Function() onBack});
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +36,18 @@ class ReelsPage extends StatelessWidget {
         videoPath:
             'https://videos.pexels.com/video-files/7605030/7605030-uhd_1440_2732_25fps.mp4',
         profileImage: 'assets/images/2.jpg',
+      ),
+      Reel(
+        username: 'NYT',
+        videoPath:
+            'https://videos.pexels.com/video-files/30268146/12975866_1080_1920_30fps.mp4',
+        profileImage: 'assets/images/1.jpg',
+      ),
+      Reel(
+        username: 'Alizay',
+        videoPath:
+            'https://videos.pexels.com/video-files/32911041/14026631_1440_2560_30fps.mp4',
+        profileImage: 'assets/images/3.jpg',
       ),
     ];
 

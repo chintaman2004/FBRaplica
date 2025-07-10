@@ -1,11 +1,16 @@
+// ignore_for_file: unnecessary_underscores
+
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class ImagePostWidget extends StatelessWidget {
-  final String username, timestamp, content, profileImage;
-  final String? postImage; // mobile
-  final Uint8List? postBytes; // web
+  final String username;
+  final String timestamp;
+  final String content;
+  final String profileImage;
+  final String? postImage; // Path for mobile/desktop
+  final Uint8List? postBytes; // Bytes for web
 
   const ImagePostWidget({
     super.key,
@@ -19,27 +24,43 @@ class ImagePostWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget img;
+    Widget imageWidget;
 
-    if (kIsWeb && postBytes != null) {
-      img = Image.memory(postBytes!, fit: BoxFit.cover, width: double.infinity);
-    } else if (!kIsWeb && postImage != null) {
-      img = Image.file(
-        File(postImage!),
-        fit: BoxFit.cover,
-        width: double.infinity,
-        errorBuilder: (context, error, stackTrace) {
-          return const Padding(
-            padding: EdgeInsets.all(12),
-            child: Text("⚠️ Failed to load image"),
-          );
-        },
-      );
-    } else {
-      img = const Padding(
-        padding: EdgeInsets.all(12),
-        child: Text("⚠️ Image not available"),
-      );
+    // --- Web ---
+    if (kIsWeb) {
+      if (postBytes != null && postBytes!.isNotEmpty) {
+        imageWidget = Image.memory(
+          postBytes!,
+          fit: BoxFit.cover,
+          width: double.infinity,
+          errorBuilder:
+              (_, __, ___) =>
+                  const Center(child: Text("⚠️ Failed to display web image")),
+        );
+      } else {
+        imageWidget = const Padding(
+          padding: EdgeInsets.all(12),
+          child: Text("⚠️ No image data provided (web)"),
+        );
+      }
+    }
+    // --- Mobile/Desktop ---
+    else {
+      if (postImage != null && File(postImage!).existsSync()) {
+        imageWidget = Image.file(
+          File(postImage!),
+          fit: BoxFit.cover,
+          width: double.infinity,
+          errorBuilder:
+              (_, __, ___) =>
+                  const Center(child: Text("⚠️ Failed to display file image")),
+        );
+      } else {
+        imageWidget = const Padding(
+          padding: EdgeInsets.all(12),
+          child: Text("⚠️ Image file not found"),
+        );
+      }
     }
 
     return Card(
@@ -67,7 +88,7 @@ class ImagePostWidget extends StatelessWidget {
             borderRadius: const BorderRadius.vertical(
               bottom: Radius.circular(12),
             ),
-            child: img,
+            child: imageWidget,
           ),
         ],
       ),
