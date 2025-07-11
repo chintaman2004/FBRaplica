@@ -1,15 +1,15 @@
 // reels_page.dart
 // ignore_for_file: deprecated_member_use
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'dart:typed_data';
 
 class Reel {
   final String username;
   final String videoPath;
   final Uint8List? videoBytes;
-  final String profileImage; // New
+  final String profileImage;
 
   Reel({
     required this.username,
@@ -53,9 +53,15 @@ class ReelsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Reels"),
+        title: const Text("Facebook Reels"),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context); // This will return to MainPage
+          },
+        ),
       ),
       body: PageView.builder(
         scrollDirection: Axis.vertical,
@@ -84,13 +90,12 @@ class _ReelPlayerState extends State<ReelPlayer> {
   @override
   void initState() {
     super.initState();
-
-    _controller = VideoPlayerController.network(widget.reel.videoPath);
-    _controller!.initialize().then((_) {
-      setState(() {});
-      _controller!.setLooping(true);
-      _controller!.play();
-    });
+    _controller = VideoPlayerController.network(widget.reel.videoPath)
+      ..initialize().then((_) {
+        setState(() {});
+        _controller!.setLooping(true);
+        _controller!.play();
+      });
   }
 
   @override
