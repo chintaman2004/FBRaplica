@@ -32,7 +32,7 @@ class _MainPageState extends State<MainPage> {
       postImage: 'assets/images/mas.jpg',
       postBytes: null,
     ),
-    VideoPostWidget(
+    const VideoPostWidget(
       username: 'John',
       timestamp: '2 min ago',
       content: 'Watch this!',
@@ -42,6 +42,7 @@ class _MainPageState extends State<MainPage> {
       postImage: '',
     ),
   ];
+
   int _selectedIndex = 0;
 
   void _showPostOptions() {
@@ -139,7 +140,12 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Facebook Replica'),
+        title: const Text('facebook'),
+        titleTextStyle: TextStyle(
+          fontSize: 30,
+          fontWeight: FontWeight.bold,
+          color: Colors.blueAccent,
+        ),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 1,
