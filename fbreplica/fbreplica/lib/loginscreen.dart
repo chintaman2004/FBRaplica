@@ -37,7 +37,7 @@ class Loginscreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF1877F2), // Facebook Blue
+      backgroundColor: Color.fromARGB(255, 113, 160, 222), // Facebook Blue
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),

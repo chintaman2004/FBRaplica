@@ -1,5 +1,4 @@
 // lib/mainpage.dart
-import 'package:fbreplica/loginscreen.dart';
 import 'package:flutter/material.dart';
 import 'post_simple_form.dart';
 import 'post_pic_form.dart';
@@ -9,6 +8,7 @@ import 'story_widget.dart';
 import 'widgets/text_post_widget.dart';
 import 'widgets/image_post_widget.dart';
 import 'widgets/video_post_widget.dart';
+import 'profilepage.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -136,7 +136,7 @@ class _MainPageState extends State<MainPage> {
       case 3:
         return const Center(child: Text('Messenger'));
       case 4:
-        return const Center(child: Text('Profile'));
+        return const ProfilePage();
       default:
         return const SizedBox();
     }
