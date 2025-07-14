@@ -1,4 +1,5 @@
 // lib/mainpage.dart
+import 'package:fbreplica/loginscreen.dart';
 import 'package:flutter/material.dart';
 import 'post_simple_form.dart';
 import 'post_pic_form.dart';
@@ -103,6 +104,8 @@ class _MainPageState extends State<MainPage> {
     Story(imageUrl: 'assets/images/ford.jpg', userName: 'NYT'),
   ];
 
+  Null get navigator => null;
+
   Widget _buildMainFeed() {
     return ListView(
       children: [
@@ -120,7 +123,14 @@ class _MainPageState extends State<MainPage> {
       case 0:
         return _buildMainFeed();
       case 1:
-        return ReelsPage(onBack: () => _onNavTapped(0));
+        return ReelsPage(
+          onBack: () {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (_) => const MainPage()),
+              (Route<dynamic> route) => false, // Removes all previous routes
+            );
+          },
+        );
       case 2:
         return const Center(child: Text('Marketplace'));
       case 3:

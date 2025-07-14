@@ -1,11 +1,11 @@
+import 'package:fbreplica/splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:fbreplica/loginscreen.dart';
 
 void main() {
   runApp(
     MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Loginscreen(), // Works now!
+      home: SplashScreen(), // Works now!
     ),
   );
 }
