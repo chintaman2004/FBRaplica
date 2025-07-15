@@ -99,14 +99,111 @@ class _MainPageState extends State<MainPage> {
 
   /// Demo Stories
   final List<Story> demoStories = [
-    Story(imageUrl: 'assets/images/ahc.jpg', userName: 'Ahmed'),
-    Story(imageUrl: 'assets/images/1.jpg', userName: 'Sara'),
-    Story(imageUrl: 'assets/images/2.jpg', userName: 'AAA'),
-    Story(imageUrl: 'assets/images/3.jpg', userName: 'Alizay'),
-    Story(imageUrl: 'assets/images/4.jpg', userName: 'Yoyo'),
-    Story(imageUrl: 'assets/images/5.png', userName: 'New'),
-    Story(imageUrl: 'assets/images/6.jpg', userName: 'AK'),
-    Story(imageUrl: 'assets/images/ford.jpg', userName: 'NYT'),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/2170387/pexels-photo-2170387.jpeg',
+      userName: 'Ahmed',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/1186116/pexels-photo-1186116.jpeg',
+      userName: 'Sara',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/757828/pexels-photo-757828.jpeg',
+      userName: 'AAA',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/2070485/pexels-photo-2070485.jpeg',
+      userName: 'Alizay',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/2728252/pexels-photo-2728252.jpeg',
+      userName: 'Yoyo',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/753339/pexels-photo-753339.jpeg',
+      userName: 'New',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/1844648/pexels-photo-1844648.jpeg',
+      userName: 'AK',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/2884867/pexels-photo-2884867.jpeg',
+      userName: 'NYT',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/1122407/pexels-photo-1122407.jpeg',
+      userName: 'Physco',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/2114229/pexels-photo-2114229.jpeg',
+      userName: 'Lil',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/3811074/pexels-photo-3811074.jpeg',
+      userName: 'Lil',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/1507856/pexels-photo-1507856.jpeg',
+      userName: 'Kitty',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/2730218/pexels-photo-2730218.jpeg',
+      userName: 'Knight Rider',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/3185480/pexels-photo-3185480.jpeg',
+      userName: 'History',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/2114333/pexels-photo-2114333.jpeg',
+      userName: 'Tribal',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/2406731/pexels-photo-2406731.jpeg',
+      userName: 'Azaan',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/1122410/pexels-photo-1122410.jpeg',
+      userName: 'Vision',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/1446161/pexels-photo-1446161.jpeg',
+      userName: 'Indian',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/3889908/pexels-photo-3889908.jpeg',
+      userName: 'Eyes',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/302457/pexels-photo-302457.jpeg',
+      userName: 'Artist',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/3243020/pexels-photo-3243020.jpeg',
+      userName: 'New',
+    ),
   ];
 
   /// Build Main Feed

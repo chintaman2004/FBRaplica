@@ -26,7 +26,7 @@ class StoryWidget extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(12),
                 image: DecorationImage(
-                  image: AssetImage(s.imageUrl),
+                  image: NetworkImage(s.imageUrl),
                   fit: BoxFit.cover,
                 ),
               ),
