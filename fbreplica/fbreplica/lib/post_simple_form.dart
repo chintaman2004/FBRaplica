@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'widgets/text_post_widget.dart';
 
 class PostSimpleForm extends StatefulWidget {
-  const PostSimpleForm({super.key});
+  const PostSimpleForm({super.key, required String initialContent});
 
   @override
   State<PostSimpleForm> createState() => _PostSimpleFormState();

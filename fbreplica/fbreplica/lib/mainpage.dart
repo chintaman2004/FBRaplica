@@ -1,4 +1,3 @@
-// lib/mainpage.dart
 import 'package:flutter/material.dart';
 import 'post_simple_form.dart';
 import 'post_pic_form.dart';
@@ -9,6 +8,7 @@ import 'widgets/text_post_widget.dart';
 import 'widgets/image_post_widget.dart';
 import 'widgets/video_post_widget.dart';
 import 'profilepage.dart';
+import 'marketplace_item.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -18,6 +18,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  /// Demo Posts
   final List<Widget> posts = [
     const TextPostWidget(
       username: 'Ahmed',
@@ -36,7 +37,7 @@ class _MainPageState extends State<MainPage> {
     const VideoPostWidget(
       username: 'John',
       timestamp: '2 min ago',
-      content: 'Watch this!',
+      content: 'Watch this video!',
       profileImage: 'assets/images/ahc.jpg',
       videoUrl: 'assets/videos/vid1.mp4',
       videoBytes: null,
@@ -46,6 +47,7 @@ class _MainPageState extends State<MainPage> {
 
   int _selectedIndex = 0;
 
+  /// Show post options bottom sheet
   void _showPostOptions() {
     showModalBottomSheet(
       context: context,
@@ -59,7 +61,9 @@ class _MainPageState extends State<MainPage> {
                   Navigator.pop(ctx);
                   final result = await Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const PostSimpleForm()),
+                    MaterialPageRoute(
+                      builder: (_) => const PostSimpleForm(initialContent: ''),
+                    ),
                   );
                   if (result != null) setState(() => posts.insert(0, result));
                 },
@@ -93,6 +97,7 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  /// Demo Stories
   final List<Story> demoStories = [
     Story(imageUrl: 'assets/images/ahc.jpg', userName: 'Ahmed'),
     Story(imageUrl: 'assets/images/1.jpg', userName: 'Sara'),
@@ -104,8 +109,7 @@ class _MainPageState extends State<MainPage> {
     Story(imageUrl: 'assets/images/ford.jpg', userName: 'NYT'),
   ];
 
-  Null get navigator => null;
-
+  /// Build Main Feed
   Widget _buildMainFeed() {
     return ListView(
       children: [
@@ -118,30 +122,50 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  /// Build Body (with FIXED ERROR)
   Widget _buildBody() {
-    switch (_selectedIndex) {
-      case 0:
-        return _buildMainFeed();
-      case 1:
-        return ReelsPage(
+    if (_selectedIndex == 0) {
+      return _buildMainFeed();
+    } else if (_selectedIndex == 1) {
+      return ReelsPage(
+        onBack: () {
+          setState(() {
+            _selectedIndex = 0;
+          });
+        },
+      );
+    } else if (_selectedIndex == 2) {
+      return Scaffold(
+        body: MarketplaceItem(
+          image: 'assets/images/14promax.jpg',
+          title: 'iPhone 14 Pro Max',
+          price: 'Rs. 225,000/=',
+          location: 'Karachi, Pakistan',
           onBack: () {
-            Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (_) => const MainPage()),
-              (Route<dynamic> route) => false, // Removes all previous routes
-            );
+            setState(() {
+              _selectedIndex = 0;
+            });
           },
-        );
-      case 2:
-        return const Center(child: Text('Marketplace'));
-      case 3:
-        return const Center(child: Text('Messenger'));
-      case 4:
-        return const ProfilePage();
-      default:
-        return const SizedBox();
+          floatingActionButton: null,
+          child: null,
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // Add Marketplace Posting Logic Here
+          },
+          child: const Icon(Icons.add),
+        ),
+      );
+    } else if (_selectedIndex == 3) {
+      return const Center(child: Text('Messenger'));
+    } else if (_selectedIndex == 4) {
+      return const ProfilePage();
+    } else {
+      return const SizedBox.shrink(); // ✅ Ensures Widget Always Returns
     }
   }
 
+  /// Bottom Navigation Action
   void _onNavTapped(int index) {
     setState(() => _selectedIndex = index);
   }
@@ -151,7 +175,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('facebook'),
-        titleTextStyle: TextStyle(
+        titleTextStyle: const TextStyle(
           fontSize: 30,
           fontWeight: FontWeight.bold,
           color: Colors.blueAccent,
@@ -162,6 +186,7 @@ class _MainPageState extends State<MainPage> {
       ),
       body: Column(
         children: [
+          /// Navigation Bar
           Container(
             color: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
@@ -198,7 +223,7 @@ class _MainPageState extends State<MainPage> {
                 ),
                 GestureDetector(
                   onTap: () => _onNavTapped(4),
-                  child: CircleAvatar(
+                  child: const CircleAvatar(
                     radius: 14,
                     backgroundImage: AssetImage('assets/images/ahc.jpg'),
                   ),
