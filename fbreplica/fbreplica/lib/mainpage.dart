@@ -18,7 +18,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  /// Demo Posts
   final List<Widget> posts = [
     const TextPostWidget(
       username: 'Ahmed',
@@ -47,7 +46,7 @@ class _MainPageState extends State<MainPage> {
 
   int _selectedIndex = 0;
 
-  /// Show post options bottom sheet
+  /// Add post options
   void _showPostOptions() {
     showModalBottomSheet(
       context: context,
@@ -97,172 +96,96 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  /// Demo Stories
+  /// Demo stories
   final List<Story> demoStories = [
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/2170387/pexels-photo-2170387.jpeg',
-      userName: 'Ahmed',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/1186116/pexels-photo-1186116.jpeg',
-      userName: 'Sara',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/757828/pexels-photo-757828.jpeg',
-      userName: 'AAA',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/2070485/pexels-photo-2070485.jpeg',
-      userName: 'Alizay',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/2728252/pexels-photo-2728252.jpeg',
-      userName: 'Yoyo',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/753339/pexels-photo-753339.jpeg',
-      userName: 'New',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/1844648/pexels-photo-1844648.jpeg',
-      userName: 'AK',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/2884867/pexels-photo-2884867.jpeg',
-      userName: 'NYT',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/1122407/pexels-photo-1122407.jpeg',
-      userName: 'Physco',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/2114229/pexels-photo-2114229.jpeg',
-      userName: 'Lil',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/3811074/pexels-photo-3811074.jpeg',
-      userName: 'Lil',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/1507856/pexels-photo-1507856.jpeg',
-      userName: 'Kitty',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/2730218/pexels-photo-2730218.jpeg',
-      userName: 'Knight Rider',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/3185480/pexels-photo-3185480.jpeg',
-      userName: 'History',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/2114333/pexels-photo-2114333.jpeg',
-      userName: 'Tribal',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/2406731/pexels-photo-2406731.jpeg',
-      userName: 'Azaan',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/1122410/pexels-photo-1122410.jpeg',
-      userName: 'Vision',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/1446161/pexels-photo-1446161.jpeg',
-      userName: 'Indian',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/3889908/pexels-photo-3889908.jpeg',
-      userName: 'Eyes',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/302457/pexels-photo-302457.jpeg',
-      userName: 'Artist',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/3243020/pexels-photo-3243020.jpeg',
-      userName: 'New',
-    ),
+    Story(imageUrl: 'assets/images/ahc.jpg', userName: 'Ahmed'),
+    Story(imageUrl: 'assets/images/1.jpg', userName: 'Sara'),
+    Story(imageUrl: 'assets/images/2.jpg', userName: 'Ali'),
+    Story(imageUrl: 'assets/images/3.jpg', userName: 'Zain'),
+    Story(imageUrl: 'assets/images/4.jpg', userName: 'Nida'),
+    Story(imageUrl: 'assets/images/5.png', userName: 'Sam'),
   ];
 
-  /// Build Main Feed
+  /// Build feed with edit/delete for text posts
   Widget _buildMainFeed() {
     return ListView(
       children: [
         const SizedBox(height: 12),
         StoryWidget(stories: demoStories),
         const Divider(height: 24),
-        ...posts,
+        ...posts.asMap().entries.map((entry) {
+          final index = entry.key;
+          final post = entry.value;
+          return Column(
+            children: [
+              post,
+              if (post is TextPostWidget)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => _editPost(index),
+                      child: const Text("Edit"),
+                    ),
+                    TextButton(
+                      onPressed: () => _deletePost(index),
+                      child: const Text("Delete"),
+                    ),
+                  ],
+                ),
+            ],
+          );
+        }),
         const SizedBox(height: 100),
       ],
     );
   }
 
-  /// Build Body (with FIXED ERROR)
+  /// Edit post
+  void _editPost(int index) async {
+    final post = posts[index];
+    if (post is TextPostWidget) {
+      final editedPost = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => PostSimpleForm(initialContent: post.content),
+        ),
+      );
+      if (editedPost != null) {
+        setState(() => posts[index] = editedPost);
+      }
+    }
+  }
+
+  /// Delete post
+  void _deletePost(int index) {
+    setState(() => posts.removeAt(index));
+  }
+
   Widget _buildBody() {
     if (_selectedIndex == 0) {
       return _buildMainFeed();
     } else if (_selectedIndex == 1) {
-      return ReelsPage(
-        onBack: () {
-          setState(() {
-            _selectedIndex = 0;
-          });
-        },
-      );
+      return ReelsPage(onBack: () => setState(() => _selectedIndex = 0));
     } else if (_selectedIndex == 2) {
-      return Scaffold(
-        body: MarketplaceItem(
-          image: 'assets/images/14promax.jpg',
-          title: 'iPhone 14 Pro Max',
-          price: 'Rs. 225,000/=',
-          location: 'Karachi, Pakistan',
-          onBack: () {
-            setState(() {
-              _selectedIndex = 0;
-            });
-          },
-          floatingActionButton: null,
-          child: null,
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            // Add Marketplace Posting Logic Here
-          },
-          child: const Icon(Icons.add),
-        ),
+      return MarketplaceItem(
+        image: 'assets/images/14promax.jpg',
+        title: 'iPhone 14 Pro Max',
+        price: 'Rs. 225,000/=',
+        location: 'Karachi, Pakistan',
+        onBack: () => setState(() => _selectedIndex = 0),
+        floatingActionButton: null,
+        child: null,
       );
     } else if (_selectedIndex == 3) {
       return const Center(child: Text('Messenger'));
     } else if (_selectedIndex == 4) {
       return const ProfilePage();
     } else {
-      return const SizedBox.shrink(); // ✅ Ensures Widget Always Returns
+      return const SizedBox.shrink();
     }
   }
 
-  /// Bottom Navigation Action
   void _onNavTapped(int index) {
     setState(() => _selectedIndex = index);
   }
@@ -283,7 +206,6 @@ class _MainPageState extends State<MainPage> {
       ),
       body: Column(
         children: [
-          /// Navigation Bar
           Container(
             color: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
@@ -331,10 +253,13 @@ class _MainPageState extends State<MainPage> {
           Expanded(child: _buildBody()),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _showPostOptions,
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton:
+          _selectedIndex == 0
+              ? FloatingActionButton(
+                onPressed: _showPostOptions,
+                child: const Icon(Icons.add),
+              )
+              : null,
     );
   }
 }
