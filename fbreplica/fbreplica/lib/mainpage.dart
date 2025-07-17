@@ -98,15 +98,68 @@ class _MainPageState extends State<MainPage> {
 
   /// Demo stories
   final List<Story> demoStories = [
-    Story(imageUrl: 'assets/images/ahc.jpg', userName: 'Ahmed'),
-    Story(imageUrl: 'assets/images/1.jpg', userName: 'Sara'),
-    Story(imageUrl: 'assets/images/2.jpg', userName: 'Ali'),
-    Story(imageUrl: 'assets/images/3.jpg', userName: 'Zain'),
-    Story(imageUrl: 'assets/images/4.jpg', userName: 'Nida'),
-    Story(imageUrl: 'assets/images/5.png', userName: 'Sam'),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/3345882/pexels-photo-3345882.jpeg',
+      userName: 'Ahmed',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/18036612/pexels-photo-18036612.jpeg',
+      userName: 'Sara',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/6346796/pexels-photo-6346796.jpeg',
+      userName: 'Ali',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/18807893/pexels-photo-18807893.jpeg',
+      userName: 'Zain',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/4167546/pexels-photo-4167546.jpeg',
+      userName: 'Nida',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/19007323/pexels-photo-19007323.jpeg',
+      userName: 'Sam',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/18812197/pexels-photo-18812197.jpeg',
+      userName: 'Yoyo',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/18659934/pexels-photo-18659934.jpeg',
+      userName: '!@#',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/6751286/pexels-photo-6751286.jpeg',
+      userName: 'Null',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/3933399/pexels-photo-3933399.jpeg',
+      userName: 'New',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/7191158/pexels-photo-7191158.jpeg',
+      userName: 'Isek',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/7009832/pexels-photo-7009832.jpeg',
+      userName: 'Nail',
+    ),
   ];
 
-  /// Build feed with edit/delete for text posts
   Widget _buildMainFeed() {
     return ListView(
       children: [

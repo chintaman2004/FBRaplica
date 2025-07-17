@@ -104,7 +104,6 @@ class ProfilePage extends StatelessWidget {
 
             const Divider(height: 20),
 
-            // Recommendations and Reviews
             sectionTitle("Recommendations and Reviews"),
             reviewItem(
               avatar: 'assets/images/reviewer1.jpg',
