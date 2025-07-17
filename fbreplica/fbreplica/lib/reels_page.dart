@@ -55,6 +55,24 @@ class ReelsPage extends StatelessWidget {
             'https://videos.pexels.com/video-files/32722668/13950063_1080_1920_30fps.mp4',
         profileImage: 'assets/images/5.png',
       ),
+      Reel(
+        username: 'John',
+        videoPath:
+            'https://videos.pexels.com/video-files/32250489/13754520_1440_2560_30fps.mp4',
+        profileImage: 'assets/images/ahc.jpg',
+      ),
+      Reel(
+        username: 'Doe',
+        videoPath:
+            'https://videos.pexels.com/video-files/32722984/13950149_1080_1920_30fps.mp4',
+        profileImage: 'assets/images/2.jpg',
+      ),
+      Reel(
+        username: 'Jane',
+        videoPath:
+            'https://videos.pexels.com/video-files/32986261/14059257_1440_2560_30fps.mp4',
+        profileImage: 'assets/images/3.jpg',
+      ),
     ];
 
     return Scaffold(

@@ -158,6 +158,51 @@ class _MainPageState extends State<MainPage> {
           'https://images.pexels.com/photos/7009832/pexels-photo-7009832.jpeg',
       userName: 'Nail',
     ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/32329242/pexels-photo-32329242.jpeg',
+      userName: 'Sandra',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/32990121/pexels-photo-32990121.jpeg',
+      userName: 'John',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/18274591/pexels-photo-18274591.jpeg',
+      userName: 'Doe',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/32921100/pexels-photo-32921100.jpeg',
+      userName: 'Jane',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/30201309/pexels-photo-30201309.jpeg',
+      userName: 'Smith',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/22866294/pexels-photo-22866294.jpeg',
+      userName: 'Alice',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/32386044/pexels-photo-32386044.jpeg',
+      userName: 'Bob',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/31887542/pexels-photo-31887542.jpeg',
+      userName: 'Charlie',
+    ),
+    Story(
+      imageUrl:
+          'https://images.pexels.com/photos/30417494/pexels-photo-30417494.jpeg',
+      userName: 'Diana',
+    ),
   ];
 
   Widget _buildMainFeed() {
