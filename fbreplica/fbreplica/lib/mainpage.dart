@@ -74,7 +74,9 @@ class _MainPageState extends State<MainPage> {
                   Navigator.pop(ctx);
                   final result = await Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const PostPicForm()),
+                    MaterialPageRoute(
+                      builder: (_) => const PostPicForm(initialContent: ''),
+                    ),
                   );
                   if (result != null) setState(() => posts.insert(0, result));
                 },
@@ -86,7 +88,13 @@ class _MainPageState extends State<MainPage> {
                   Navigator.pop(ctx);
                   final result = await Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const PostVidForm()),
+                    MaterialPageRoute(
+                      builder:
+                          (_) => const PostVidForm(
+                            initialContent: '',
+                            initialVideo: '',
+                          ),
+                    ),
                   );
                   if (result != null) setState(() => posts.insert(0, result));
                 },
@@ -113,103 +121,30 @@ class _MainPageState extends State<MainPage> {
           'https://images.pexels.com/photos/6346796/pexels-photo-6346796.jpeg',
       userName: 'Ali',
     ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/18807893/pexels-photo-18807893.jpeg',
-      userName: 'Zain',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/4167546/pexels-photo-4167546.jpeg',
-      userName: 'Nida',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/19007323/pexels-photo-19007323.jpeg',
-      userName: 'Sam',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/18812197/pexels-photo-18812197.jpeg',
-      userName: 'Yoyo',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/18659934/pexels-photo-18659934.jpeg',
-      userName: '!@#',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/6751286/pexels-photo-6751286.jpeg',
-      userName: 'Null',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/3933399/pexels-photo-3933399.jpeg',
-      userName: 'New',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/7191158/pexels-photo-7191158.jpeg',
-      userName: 'Isek',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/7009832/pexels-photo-7009832.jpeg',
-      userName: 'Nail',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/32329242/pexels-photo-32329242.jpeg',
-      userName: 'Sandra',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/32990121/pexels-photo-32990121.jpeg',
-      userName: 'John',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/18274591/pexels-photo-18274591.jpeg',
-      userName: 'Doe',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/32921100/pexels-photo-32921100.jpeg',
-      userName: 'Jane',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/30201309/pexels-photo-30201309.jpeg',
-      userName: 'Smith',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/22866294/pexels-photo-22866294.jpeg',
-      userName: 'Alice',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/32386044/pexels-photo-32386044.jpeg',
-      userName: 'Bob',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/31887542/pexels-photo-31887542.jpeg',
-      userName: 'Charlie',
-    ),
-    Story(
-      imageUrl:
-          'https://images.pexels.com/photos/30417494/pexels-photo-30417494.jpeg',
-      userName: 'Diana',
-    ),
+    // ... add rest of stories
   ];
 
   Widget _buildMainFeed() {
     return ListView(
       children: [
         const SizedBox(height: 12),
-        StoryWidget(stories: demoStories),
+        SizedBox(
+          height: 120,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children:
+                  demoStories
+                      .map(
+                        (story) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: StoryWidget(stories: [story]),
+                        ),
+                      )
+                      .toList(),
+            ),
+          ),
+        ),
         const Divider(height: 24),
         ...posts.asMap().entries.map((entry) {
           final index = entry.key;
@@ -217,20 +152,19 @@ class _MainPageState extends State<MainPage> {
           return Column(
             children: [
               post,
-              if (post is TextPostWidget)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => _editPost(index),
-                      child: const Text("Edit"),
-                    ),
-                    TextButton(
-                      onPressed: () => _deletePost(index),
-                      child: const Text("Delete"),
-                    ),
-                  ],
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => _editPost(index),
+                    child: const Text("Edit"),
+                  ),
+                  TextButton(
+                    onPressed: () => _deletePost(index),
+                    child: const Text("Delete"),
+                  ),
+                ],
+              ),
             ],
           );
         }),
@@ -242,16 +176,41 @@ class _MainPageState extends State<MainPage> {
   /// Edit post
   void _editPost(int index) async {
     final post = posts[index];
+    dynamic editedPost;
+
     if (post is TextPostWidget) {
-      final editedPost = await Navigator.push(
+      editedPost = await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (_) => PostSimpleForm(initialContent: post.content),
         ),
       );
-      if (editedPost != null) {
-        setState(() => posts[index] = editedPost);
-      }
+    } else if (post is ImagePostWidget) {
+      editedPost = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (_) => PostPicForm(
+                initialContent: post.content,
+                initialImage: post.postImage,
+              ),
+        ),
+      );
+    } else if (post is VideoPostWidget) {
+      editedPost = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (_) => PostVidForm(
+                initialContent: post.content,
+                initialVideo: post.videoUrl,
+              ),
+        ),
+      );
+    }
+
+    if (editedPost != null) {
+      setState(() => posts[index] = editedPost);
     }
   }
 

@@ -4,7 +4,11 @@ import 'file_picker_helper.dart';
 import 'widgets/video_post_widget.dart';
 
 class PostVidForm extends StatefulWidget {
-  const PostVidForm({super.key});
+  const PostVidForm({
+    super.key,
+    required String initialContent,
+    required String initialVideo,
+  });
 
   @override
   State<PostVidForm> createState() => _PostVidFormState();

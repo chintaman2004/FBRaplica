@@ -5,7 +5,11 @@ import 'file_picker_helper.dart';
 import 'widgets/image_post_widget.dart';
 
 class PostPicForm extends StatefulWidget {
-  const PostPicForm({super.key});
+  const PostPicForm({
+    super.key,
+    required String initialContent,
+    String? initialImage,
+  });
 
   @override
   State<PostPicForm> createState() => _PostPicFormState();
