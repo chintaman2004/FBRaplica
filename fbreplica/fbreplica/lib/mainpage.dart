@@ -77,6 +77,17 @@ class _MainPageState extends State<MainPage> {
     ),
   ];
 
+  /// ✅ Like state and Like counts
+  final List<bool> _likedPosts = [];
+  final List<int> _likeCounts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _likedPosts.addAll(List.generate(posts.length, (_) => false));
+    _likeCounts.addAll(List.generate(posts.length, (_) => 0));
+  }
+
   /// ✅ Show Post Options
   void _showPostOptions() {
     showModalBottomSheet(
@@ -139,39 +150,139 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  /// ✅ Main Feed
+  /// ✅ Comment Feature
+  void _showCommentsSheet(BuildContext context, int postIndex) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            height: 300,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Comments",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const Divider(),
+                Expanded(
+                  child: ListView(
+                    children: const [
+                      Text("No comments yet. Be the first to comment!"),
+                    ],
+                  ),
+                ),
+                TextField(
+                  decoration: InputDecoration(
+                    hintText: "Write a comment...",
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.send, color: Colors.blue),
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// ✅ Main Feed with Double-Tap to Like
   Widget _buildMainFeed() {
     return ListView.builder(
-      itemCount: posts.length + 2, // Stories + Divider + Posts
+      itemCount: posts.length + 2,
       itemBuilder: (context, index) {
         if (index == 0) return const SizedBox(height: 12);
         if (index == 1) {
           return Column(
-            children: [
-              Stories(stories: stories), // ✅ Pass stories dynamically
-              const Divider(height: 24),
-            ],
+            children: [Stories(stories: stories), const Divider(height: 24)],
           );
         }
         final postIndex = index - 2;
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            posts[postIndex],
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  _reactionButton(Icons.thumb_up_alt_outlined, "Like"),
-                  _reactionButton(Icons.comment_outlined, "Comment"),
-                  _reactionButton(Icons.share_outlined, "Share"),
-                ],
+        return GestureDetector(
+          onDoubleTap: () {
+            setState(() {
+              if (!_likedPosts[postIndex]) {
+                _likedPosts[postIndex] = true;
+                _likeCounts[postIndex]++;
+              }
+            });
+          },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              posts[postIndex],
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 4,
+                ),
+                child: Text(
+                  "${_likeCounts[postIndex]} Likes",
+                  style: const TextStyle(color: Colors.grey),
+                ),
               ),
-            ),
-            const Divider(height: 24),
-          ],
+              const SizedBox(height: 8),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _likedPosts[postIndex] = !_likedPosts[postIndex];
+                          if (_likedPosts[postIndex]) {
+                            _likeCounts[postIndex]++;
+                          } else {
+                            _likeCounts[postIndex]--;
+                          }
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          Icon(
+                            _likedPosts[postIndex]
+                                ? Icons.thumb_up_alt
+                                : Icons.thumb_up_alt_outlined,
+                            size: 18,
+                            color:
+                                _likedPosts[postIndex]
+                                    ? Colors.blue
+                                    : Colors.grey[700],
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            "Like",
+                            style: TextStyle(
+                              color:
+                                  _likedPosts[postIndex]
+                                      ? Colors.blue
+                                      : Colors.grey[700],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => _showCommentsSheet(context, postIndex),
+                      child: _reactionButton(Icons.comment_outlined, "Comment"),
+                    ),
+                    _reactionButton(Icons.share_outlined, "Share"),
+                  ],
+                ),
+              ),
+              const Divider(height: 24),
+            ],
+          ),
         );
       },
     );
@@ -187,7 +298,6 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  /// ✅ Navigation Pages
   Widget _getPage() {
     switch (_selectedIndex) {
       case 0:
