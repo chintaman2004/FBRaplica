@@ -20,7 +20,6 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
 
-  /// ✅ Stories List
   final List<Map<String, String>> stories = [
     {
       "username": "Ahmed",
@@ -45,7 +44,6 @@ class _MainPageState extends State<MainPage> {
     },
   ];
 
-  /// ✅ Posts List
   final List<Widget> posts = [
     const TextPostWidget(
       username: 'Ahmed',
@@ -77,7 +75,6 @@ class _MainPageState extends State<MainPage> {
     ),
   ];
 
-  /// ✅ Like state and Like counts
   final List<bool> _likedPosts = [];
   final List<int> _likeCounts = [];
 
@@ -88,7 +85,6 @@ class _MainPageState extends State<MainPage> {
     _likeCounts.addAll(List.generate(posts.length, (_) => 0));
   }
 
-  /// ✅ Show Post Options
   void _showPostOptions() {
     showModalBottomSheet(
       context: context,
@@ -150,7 +146,6 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  /// ✅ Comment Feature
   void _showCommentsSheet(BuildContext context, int postIndex) {
     showModalBottomSheet(
       context: context,
@@ -195,7 +190,6 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  /// ✅ Main Feed with Double-Tap to Like
   Widget _buildMainFeed() {
     return ListView.builder(
       itemCount: posts.length + 2,
