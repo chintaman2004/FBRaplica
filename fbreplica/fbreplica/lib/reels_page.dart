@@ -1,15 +1,14 @@
 // ignore_for_file: deprecated_member_use
 
-import 'package:fbreplica/mainpage.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'dart:typed_data';
 
 class Reel {
-  final String username;
-  final String videoPath;
-  final Uint8List? videoBytes;
-  final String profileImage;
+  String username;
+  String videoPath;
+  Uint8List? videoBytes;
+  String profileImage;
 
   Reel({
     required this.username,
@@ -76,20 +75,20 @@ class ReelsPage extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Facebook Reels"),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const MainPage()),
-            );
-          },
-        ),
-      ),
+      // appBar: AppBar(
+      //   title: const Text("Facebook Reels"),
+      //   backgroundColor: Colors.white,
+      //   foregroundColor: Colors.black,
+      //   leading: IconButton(
+      //     icon: const Icon(Icons.arrow_back),
+      //     onPressed: () {
+      //       Navigator.pushReplacement(
+      //         context,
+      //         MaterialPageRoute(builder: (context) => const MainPage()),
+      //       );
+      //     },
+      //   ),
+      // ),
       body: PageView.builder(
         scrollDirection: Axis.vertical,
         itemCount: demoReels.length,
