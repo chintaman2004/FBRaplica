@@ -30,7 +30,7 @@ class _CardsStackPageState extends State<CardsStackPage> {
     return Scaffold(
       backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
-        title: const Text("Cards Stack"),
+        title: const Text("Cards Stacks"),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 1,
