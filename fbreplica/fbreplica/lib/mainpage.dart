@@ -9,6 +9,7 @@ import 'widgets/video_post_widget.dart';
 import 'profilepage.dart';
 import 'marketplace_item.dart';
 import 'stories.dart';
+import 'cardstack.dart'; // ✅ Added
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -298,6 +299,7 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
+  /// ✅ Handle Navigation
   Widget _getPage() {
     switch (_selectedIndex) {
       case 0:
@@ -319,6 +321,8 @@ class _MainPageState extends State<MainPage> {
         return const Center(child: Text('Messenger Screen Coming Soon'));
       case 4:
         return const ProfilePage();
+      case 5: // ✅ Card Stack Page
+        return CardsStackPage();
       default:
         return const SizedBox.shrink();
     }
@@ -363,6 +367,10 @@ class _MainPageState extends State<MainPage> {
           ),
           BottomNavigationBarItem(icon: Icon(Icons.message), label: 'Messages'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.layers),
+            label: 'Cards',
+          ), // ✅ Added
         ],
       ),
     );
