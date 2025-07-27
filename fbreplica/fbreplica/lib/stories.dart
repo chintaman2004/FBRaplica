@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class Stories extends StatelessWidget {
   Stories({super.key, required List<Map<String, String>> stories});
 
-  // ✅ Move stories list here
   final List<Map<String, String>> stories = [
     {
       "username": "Ahmed",

@@ -1,7 +1,7 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
 import 'package:fbreplica/mainpage.dart';
+import 'signup_screen.dart';
+import 'forgot_password_screen.dart'; // <-- NEW import
 
 class Loginscreen extends StatelessWidget {
   Loginscreen({super.key});
@@ -37,20 +37,15 @@ class Loginscreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 113, 160, 222), // Facebook Blue
+      backgroundColor: Color.fromARGB(255, 113, 160, 222),
       body: Center(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Facebook Logo
-              Image.asset(
-                'assets/images/fb_logo.png', // Replace with your image asset
-                height: 80,
-              ),
+              Image.asset('assets/images/fb_logo.png', height: 80),
               const SizedBox(height: 30),
-              // Login Box
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
@@ -95,7 +90,14 @@ class Loginscreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ForgotPasswordScreen(),
+                          ),
+                        );
+                      },
                       child: Text(
                         "Forgot Password?",
                         style: TextStyle(color: Colors.grey[700]),
@@ -106,7 +108,12 @@ class Loginscreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignupScreen()),
+                  );
+                },
                 child: Text(
                   "Create New Account",
                   style: TextStyle(
