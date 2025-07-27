@@ -8,8 +8,8 @@ import 'widgets/image_post_widget.dart';
 import 'widgets/video_post_widget.dart';
 import 'profilepage.dart';
 import 'marketplace_item.dart';
-import 'stories.dart';
-import 'cardstack.dart'; // ✅ Added
+import 'cardstack.dart';
+import 'story_view_screen.dart'; // ✅ NEW for fullscreen stories
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -198,7 +198,44 @@ class _MainPageState extends State<MainPage> {
         if (index == 0) return const SizedBox(height: 12);
         if (index == 1) {
           return Column(
-            children: [Stories(stories: stories), const Divider(height: 24)],
+            children: [
+              SizedBox(
+                height: 120,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: stories.length,
+                  itemBuilder: (context, i) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder:
+                                (_) => StoryViewScreen(
+                                  imageUrl: stories[i]['storyImage']!,
+                                  username: stories[i]['username']!,
+                                  profileImage: stories[i]['profileImage']!,
+                                ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 8),
+                        width: 70,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          image: DecorationImage(
+                            image: NetworkImage(stories[i]['storyImage']!),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const Divider(height: 24),
+            ],
           );
         }
         final postIndex = index - 2;
@@ -293,7 +330,6 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  /// ✅ Handle Navigation
   Widget _getPage() {
     switch (_selectedIndex) {
       case 0:
@@ -315,7 +351,7 @@ class _MainPageState extends State<MainPage> {
         return const Center(child: Text('Messenger Screen Coming Soon'));
       case 4:
         return const ProfilePage();
-      case 5: // ✅ Card Stack Page
+      case 5:
         return CardsStackPage();
       default:
         return const SizedBox.shrink();
@@ -361,10 +397,7 @@ class _MainPageState extends State<MainPage> {
           ),
           BottomNavigationBarItem(icon: Icon(Icons.message), label: 'Messages'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.layers),
-            label: 'Cards',
-          ), // ✅ Added
+          BottomNavigationBarItem(icon: Icon(Icons.layers), label: 'Cards'),
         ],
       ),
     );
