@@ -1,32 +1,86 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fbreplica/mainpage.dart';
 import 'signup_screen.dart';
-import 'forgot_password_screen.dart'; // <-- NEW import
+import 'forgot_password_screen.dart';
 
 class Loginscreen extends StatelessWidget {
   Loginscreen({super.key});
 
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  void login(BuildContext context) {
-    if (usernameController.text == "abc@abc.com" &&
-        passwordController.text == "123") {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => MainPage()),
-      );
-    } else {
+  /// Firebase Login Function
+  void login(BuildContext context) async {
+    String email = usernameController.text.trim();
+    String password = passwordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty) {
       showDialog(
         context: context,
         builder:
             (context) => AlertDialog(
-              title: Text("❌ Invalid credentials"),
-              content: Text("Please check your email and password."),
+              title: Text("⚠️ Missing Fields"),
+              content: Text("Please enter both email and password."),
               actions: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text("OK 👍"),
+                  child: Text("OK"),
+                ),
+              ],
+            ),
+      );
+      return;
+    }
+
+    try {
+      // Firebase Sign-in
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+
+      // If successful, navigate to Main Page
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainPage()),
+      );
+    } on FirebaseAuthException catch (e) {
+      String message = "❌ Login Failed";
+
+      if (e.code == 'user-not-found') {
+        message = "❌ No user found with this email.";
+      } else if (e.code == 'wrong-password') {
+        message = "❌ Incorrect password.";
+      } else if (e.code == 'invalid-email') {
+        message = "❌ Invalid email format.";
+      }
+
+      showDialog(
+        context: context,
+        builder:
+            (context) => AlertDialog(
+              title: Text("Login Error"),
+              content: Text(message),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text("OK"),
+                ),
+              ],
+            ),
+      );
+    } catch (e) {
+      showDialog(
+        context: context,
+        builder:
+            (context) => AlertDialog(
+              title: Text("Unexpected Error"),
+              content: Text("❌ Error: $e"),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text("OK"),
                 ),
               ],
             ),
@@ -58,7 +112,7 @@ class Loginscreen extends StatelessWidget {
                       controller: usernameController,
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.email),
-                        labelText: '📧 Email or Phone',
+                        labelText: '📧 Email',
                         border: OutlineInputBorder(),
                       ),
                     ),

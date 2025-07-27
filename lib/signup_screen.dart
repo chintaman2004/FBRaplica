@@ -1,4 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignupScreen extends StatelessWidget {
   SignupScreen({super.key});
@@ -7,18 +10,52 @@ class SignupScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  void signup(BuildContext context) {
-    if (nameController.text.isNotEmpty &&
-        emailController.text.isNotEmpty &&
-        passwordController.text.isNotEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("✅ Account Created Successfully")));
-      Navigator.pop(context); // Go back to Login
-    } else {
+  /// Firebase Auth instance
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  /// SignUp Function using Firebase
+  void signup(BuildContext context) async {
+    String name = nameController.text.trim();
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+
+    if (name.isEmpty || email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text("❌ Please fill all fields")));
+      return;
+    }
+
+    try {
+      // Create user with email and password
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: email, password: password);
+
+      // Optional: Update display name
+      await userCredential.user!.updateDisplayName(name);
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("✅ Account Created Successfully")));
+
+      Navigator.pop(context); // Go back to Login
+    } on FirebaseAuthException catch (e) {
+      String message = "❌ Something went wrong";
+      if (e.code == 'email-already-in-use') {
+        message = "❌ Email already in use";
+      } else if (e.code == 'weak-password') {
+        message = "❌ Password should be at least 6 characters";
+      } else if (e.code == 'invalid-email') {
+        message = "❌ Invalid email address";
+      }
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(message)));
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("❌ Error: $e")));
     }
   }
 
