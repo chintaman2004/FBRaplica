@@ -1,206 +1,31 @@
-import 'package:flutter/material.dart';
+// stories.dart
 
-class Stories extends StatelessWidget {
-  Stories({super.key, required List<Map<String, String>> stories});
+class Story {
+  final String imageUrl;
+  final String userName;
 
-  final List<Map<String, String>> stories = [
-    {
-      "username": "Ahmed",
-      "profileImage":
-          "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg",
-    },
-    {
-      "username": "Sara",
-      "profileImage":
-          "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg",
-    },
-    {
-      "username": "John",
-      "profileImage":
-          "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/414171/pexels-photo-414171.jpeg",
-    },
-    {
-      "username": "Emily",
-      "profileImage":
-          "https://images.pexels.com/photos/1239298/pexels-photo-1239298.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/414171/pexels-photo-414171.jpeg",
-    },
-    {
-      "username": "Michael",
-      "profileImage":
-          "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg",
-    },
-    {
-      "username": "Sophia",
-      "profileImage":
-          "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg",
-    },
-    {
-      "username": "Liam",
-      "profileImage":
-          "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg",
-    },
-    {
-      "username": "Olivia",
-      "profileImage":
-          "https://images.pexels.com/photos/1239298/pexels-photo-1239298.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/414171/pexels-photo-414171.jpeg",
-    },
-    {
-      "username": "James",
-      "profileImage":
-          "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg",
-    },
-    {
-      "username": "Ava",
-      "profileImage":
-          "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg",
-    },
-    {
-      "username": "Ahmed",
-      "profileImage":
-          "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg",
-    },
-    {
-      "username": "Sara",
-      "profileImage":
-          "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg",
-    },
-    {
-      "username": "John",
-      "profileImage":
-          "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/414171/pexels-photo-414171.jpeg",
-    },
-    {
-      "username": "Emily",
-      "profileImage":
-          "https://images.pexels.com/photos/1239298/pexels-photo-1239298.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/414171/pexels-photo-414171.jpeg",
-    },
-    {
-      "username": "Michael",
-      "profileImage":
-          "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg",
-    },
-    {
-      "username": "Sophia",
-      "profileImage":
-          "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg",
-    },
-    {
-      "username": "Liam",
-      "profileImage":
-          "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg",
-    },
-    {
-      "username": "Olivia",
-      "profileImage":
-          "https://images.pexels.com/photos/1239298/pexels-photo-1239298.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/414171/pexels-photo-414171.jpeg",
-    },
-    {
-      "username": "James",
-      "profileImage":
-          "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg",
-    },
-    {
-      "username": "Ava",
-      "profileImage":
-          "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg",
-    },
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 190,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: stories.length,
-        itemBuilder: (context, index) {
-          final story = stories[index];
-          return Container(
-            width: 120,
-            margin: const EdgeInsets.symmetric(horizontal: 8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
-              image: DecorationImage(
-                image: NetworkImage(story['storyImage']!),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Stack(
-              alignment: Alignment.bottomLeft,
-              children: [
-                Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.black54, Colors.transparent],
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    story['username']!,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 8,
-                  left: 8,
-                  child: CircleAvatar(
-                    backgroundImage: NetworkImage(story['profileImage']!),
-                    radius: 18,
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
+  Story({required this.imageUrl, required this.userName});
 }
+
+final List<Story> demoStories = [
+  Story(imageUrl: 'https://picsum.photos/200/300?1', userName: 'Ahmed'),
+  Story(imageUrl: 'https://picsum.photos/200/300?2', userName: 'Sara'),
+  Story(imageUrl: 'https://picsum.photos/200/300?3', userName: 'Ali'),
+  Story(imageUrl: 'https://picsum.photos/200/300?4', userName: 'Fatima'),
+  Story(imageUrl: 'https://picsum.photos/200/300?5', userName: 'John'),
+  Story(imageUrl: 'https://picsum.photos/200/300?6', userName: 'Maya'),
+  Story(imageUrl: 'https://picsum.photos/200/300?7', userName: 'Zain'),
+  Story(imageUrl: 'https://picsum.photos/200/300?8', userName: 'Emma'),
+  Story(imageUrl: 'https://picsum.photos/200/300?9', userName: 'Bilal'),
+  Story(imageUrl: 'https://picsum.photos/200/300?10', userName: 'Nora'),
+  Story(imageUrl: 'https://picsum.photos/200/300?11', userName: 'Usman'),
+  Story(imageUrl: 'https://picsum.photos/200/300?12', userName: 'Alina'),
+  Story(imageUrl: 'https://picsum.photos/200/300?13', userName: 'Hamza'),
+  Story(imageUrl: 'https://picsum.photos/200/300?14', userName: 'Sophia'),
+  Story(imageUrl: 'https://picsum.photos/200/300?15', userName: 'Tariq'),
+  Story(imageUrl: 'https://picsum.photos/200/300?16', userName: 'Olivia'),
+  Story(imageUrl: 'https://picsum.photos/200/300?17', userName: 'Kashif'),
+  Story(imageUrl: 'https://picsum.photos/200/300?18', userName: 'Zoya'),
+  Story(imageUrl: 'https://picsum.photos/200/300?19', userName: 'Imran'),
+  Story(imageUrl: 'https://picsum.photos/200/300?20', userName: 'Aisha'),
+];

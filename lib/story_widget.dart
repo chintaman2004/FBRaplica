@@ -1,54 +1,84 @@
-import 'package:flutter/material.dart';
+// story_widget.dart
 
-class Story {
-  final String imageUrl, userName;
-  Story({required this.imageUrl, required this.userName});
-}
+import 'package:flutter/material.dart';
+import 'stories.dart'; // Import this to use Story and demoStories
 
 class StoryWidget extends StatelessWidget {
   final List<Story> stories;
-  const StoryWidget({super.key, required this.stories});
+
+  const StoryWidget({
+    super.key,
+    required this.stories,
+    required void Function(Story story) onStoryTap,
+  });
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-    height: 150,
-    child: ListView.separated(
-      scrollDirection: Axis.horizontal,
-      itemCount: stories.length,
-      separatorBuilder: (_, _) => const SizedBox(width: 10),
-      itemBuilder: (_, i) {
-        final s = stories[i];
-        return Stack(
-          children: [
-            Container(
-              width: 90,
-              height: 140,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                image: DecorationImage(
-                  image: NetworkImage(s.imageUrl),
-                  fit: BoxFit.cover,
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 150,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: stories.length,
+        separatorBuilder: (context, index) => const SizedBox(width: 10),
+        itemBuilder: (context, index) {
+          final story = stories[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (_) => Scaffold(
+                        backgroundColor: Colors.black,
+                        appBar: AppBar(backgroundColor: Colors.transparent),
+                        body: Center(child: Image.network(story.imageUrl)),
+                      ),
                 ),
-              ),
-            ),
-            Positioned(
-              bottom: 6,
-              left: 6,
-              right: 6,
-              child: Text(
-                s.userName,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  shadows: [Shadow(color: Colors.black, blurRadius: 4)],
+              );
+            },
+            child: Stack(
+              children: [
+                Container(
+                  height: 140,
+                  width: 90,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    image: DecorationImage(
+                      image: NetworkImage(story.imageUrl),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
                 ),
-                overflow: TextOverflow.ellipsis,
-              ),
+                Positioned(
+                  bottom: 6,
+                  left: 6,
+                  right: 6,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black54,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      story.userName,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.left,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        );
-      },
-    ),
-  );
+          );
+        },
+      ),
+    );
+  }
 }
