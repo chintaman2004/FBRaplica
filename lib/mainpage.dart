@@ -1,15 +1,8 @@
 import 'package:flutter/material.dart';
-import 'post_simple_form.dart';
-import 'post_pic_form.dart';
-import 'post_vid_form.dart';
-import 'reels_page.dart';
-import 'widgets/text_post_widget.dart';
-import 'widgets/image_post_widget.dart';
-import 'widgets/video_post_widget.dart';
-import 'profilepage.dart';
-import 'marketplace_item.dart';
-import 'cardstack.dart';
-import 'story_view_screen.dart'; // ✅ NEW for fullscreen stories
+import 'story_view_screen.dart';
+import 'post_simple_form.dart'; // Make sure you have this
+import 'post_pic_form.dart'; // Optional
+import 'post_vid_form.dart'; // Optional
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -23,382 +16,241 @@ class _MainPageState extends State<MainPage> {
 
   final List<Map<String, String>> stories = [
     {
-      "username": "Ahmed",
-      "profileImage":
-          "https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg",
+      'storyImage':
+          'https://images.unsplash.com/photo-1603415526960-f7e0328f0796',
+      'username': 'Alice',
+      'profileImage':
+          'https://images.unsplash.com/photo-1607746882042-944635dfe10e',
     },
     {
-      "username": "Sara",
-      "profileImage":
-          "https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg",
-    },
-    {
-      "username": "John",
-      "profileImage":
-          "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg",
-      "storyImage":
-          "https://images.pexels.com/photos/414171/pexels-photo-414171.jpeg",
+      'storyImage':
+          'https://images.unsplash.com/photo-1607746882042-944635dfe10e',
+      'username': 'Bob',
+      'profileImage':
+          'https://images.unsplash.com/photo-1603415526960-f7e0328f0796',
     },
   ];
 
-  final List<Widget> posts = [
-    const TextPostWidget(
-      username: 'Ahmed',
-      timestamp: 'Just now',
-      content: 'Hello from Facebook Replica!',
-      profileImage:
-          'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg',
-    ),
-    const ImagePostWidget(
-      username: 'Sara',
-      timestamp: '1 min ago',
-      content: 'Check out this amazing photo!',
-      profileImage:
-          'https://images.pexels.com/photos/1130626/pexels-photo-1130626.jpeg',
-      postImage:
-          'https://images.pexels.com/photos/414612/pexels-photo-414612.jpeg',
-      postBytes: null,
-    ),
-    const VideoPostWidget(
-      username: 'John',
-      timestamp: '2 min ago',
-      content: 'Watch this awesome video!',
-      profileImage:
-          'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg',
-      videoUrl:
-          'https://videos.pexels.com/video-files/855564/855564-hd_1920_1080_24fps.mp4',
-      videoBytes: null,
-      postImage: '',
-    ),
-  ];
-
-  final List<bool> _likedPosts = [];
-  final List<int> _likeCounts = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _likedPosts.addAll(List.generate(posts.length, (_) => false));
-    _likeCounts.addAll(List.generate(posts.length, (_) => 0));
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   void _showPostOptions() {
     showModalBottomSheet(
       context: context,
       builder:
-          (ctx) => Wrap(
+          (_) => Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
                 leading: const Icon(Icons.text_fields),
                 title: const Text("Text Post"),
-                onTap: () async {
-                  Navigator.pop(ctx);
-                  final result = await Navigator.push(
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const PostSimpleForm(initialContent: ''),
+                      builder: (_) => PostSimpleForm(initialContent: ''),
                     ),
                   );
-                  if (result != null) setState(() => posts.insert(0, result));
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.image),
-                title: const Text("Image Post"),
-                onTap: () async {
-                  Navigator.pop(ctx);
-                  final result = await Navigator.push(
+                title: const Text("Picture Post"),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder:
-                          (_) => const PostPicForm(
-                            initialContent: '',
-                            initialImage: '',
-                          ),
+                      builder: (_) => PostPicForm(initialContent: ''),
                     ),
                   );
-                  if (result != null) setState(() => posts.insert(0, result));
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.videocam),
+                leading: const Icon(Icons.video_library),
                 title: const Text("Video Post"),
-                onTap: () async {
-                  Navigator.pop(ctx);
-                  final result = await Navigator.push(
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder:
-                          (_) => const PostVidForm(
-                            initialContent: '',
-                            initialVideo: '',
-                          ),
+                          (_) =>
+                              PostVidForm(initialContent: '', initialVideo: ''),
                     ),
                   );
-                  if (result != null) setState(() => posts.insert(0, result));
                 },
               ),
             ],
           ),
     );
-  }
-
-  void _showCommentsSheet(BuildContext context, int postIndex) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (_) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            height: 300,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  "Comments",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const Divider(),
-                Expanded(
-                  child: ListView(
-                    children: const [
-                      Text("No comments yet. Be the first to comment!"),
-                    ],
-                  ),
-                ),
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: "Write a comment...",
-                    suffixIcon: IconButton(
-                      icon: const Icon(Icons.send, color: Colors.blue),
-                      onPressed: () {},
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildMainFeed() {
-    return ListView.builder(
-      itemCount: posts.length + 2,
-      itemBuilder: (context, index) {
-        if (index == 0) return const SizedBox(height: 12);
-        if (index == 1) {
-          return Column(
-            children: [
-              SizedBox(
-                height: 120,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: stories.length,
-                  itemBuilder: (context, i) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder:
-                                (_) => StoryViewScreen(
-                                  imageUrl: stories[i]['storyImage']!,
-                                  username: stories[i]['username']!,
-                                  profileImage: stories[i]['profileImage']!,
-                                ),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 8),
-                        width: 70,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(
-                            image: NetworkImage(stories[i]['storyImage']!),
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const Divider(height: 24),
-            ],
-          );
-        }
-        final postIndex = index - 2;
-        return GestureDetector(
-          onDoubleTap: () {
-            setState(() {
-              if (!_likedPosts[postIndex]) {
-                _likedPosts[postIndex] = true;
-                _likeCounts[postIndex]++;
-              }
-            });
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              posts[postIndex],
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 4,
-                ),
-                child: Text(
-                  "${_likeCounts[postIndex]} Likes",
-                  style: const TextStyle(color: Colors.grey),
-                ),
-              ),
-              const SizedBox(height: 8),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _likedPosts[postIndex] = !_likedPosts[postIndex];
-                          if (_likedPosts[postIndex]) {
-                            _likeCounts[postIndex]++;
-                          } else {
-                            _likeCounts[postIndex]--;
-                          }
-                        });
-                      },
-                      child: Row(
-                        children: [
-                          Icon(
-                            _likedPosts[postIndex]
-                                ? Icons.thumb_up_alt
-                                : Icons.thumb_up_alt_outlined,
-                            size: 18,
-                            color:
-                                _likedPosts[postIndex]
-                                    ? Colors.blue
-                                    : Colors.grey[700],
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            "Like",
-                            style: TextStyle(
-                              color:
-                                  _likedPosts[postIndex]
-                                      ? Colors.blue
-                                      : Colors.grey[700],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () => _showCommentsSheet(context, postIndex),
-                      child: _reactionButton(Icons.comment_outlined, "Comment"),
-                    ),
-                    _reactionButton(Icons.share_outlined, "Share"),
-                  ],
-                ),
-              ),
-              const Divider(height: 24),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _reactionButton(IconData icon, String text) {
-    return Row(
-      children: [
-        Icon(icon, size: 18, color: Colors.grey[700]),
-        const SizedBox(width: 4),
-        Text(text, style: TextStyle(color: Colors.grey[700])),
-      ],
-    );
-  }
-
-  Widget _getPage() {
-    switch (_selectedIndex) {
-      case 0:
-        return _buildMainFeed();
-      case 1:
-        return ReelsPage(onBack: () => setState(() => _selectedIndex = 0));
-      case 2:
-        return MarketplaceItem(
-          image:
-              'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg',
-          title: 'iPhone 14 Pro Max',
-          price: 'Rs. 225,000/=',
-          location: 'Karachi, Pakistan',
-          onBack: () => setState(() => _selectedIndex = 0),
-          floatingActionButton: null,
-          child: null,
-        );
-      case 3:
-        return const Center(child: Text('Messenger Screen Coming Soon'));
-      case 4:
-        return const ProfilePage();
-      case 5:
-        return CardsStackPage();
-      default:
-        return const SizedBox.shrink();
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('facebook'),
-        titleTextStyle: const TextStyle(
-          fontSize: 30,
-          fontWeight: FontWeight.bold,
-          color: Colors.blueAccent,
-        ),
-        backgroundColor: Colors.white,
-        elevation: 1,
+        title: const Text("Facebook Replica"),
+        backgroundColor: const Color(0xFF1877F2),
+        foregroundColor: Colors.white,
       ),
-      body: _getPage(),
-      floatingActionButton:
-          _selectedIndex == 0
-              ? FloatingActionButton(
-                onPressed: _showPostOptions,
-                child: const Icon(Icons.add),
-              )
-              : null,
+      body: ListView.builder(
+        itemCount: 10,
+        itemBuilder: (context, index) {
+          if (index == 0) {
+            return _buildStorySection(context);
+          } else {
+            return _buildPost(index);
+          }
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _showPostOptions,
+        backgroundColor: const Color(0xFF1877F2),
+        child: const Icon(Icons.add, color: Colors.white),
+      ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
+        onTap: _onItemTapped,
+        selectedItemColor: const Color(0xFF1877F2),
         unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed,
-        onTap: (index) => setState(() => _selectedIndex = index),
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.ondemand_video),
-            label: 'Reels',
+            icon: Icon(Icons.home_outlined),
+            label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.storefront),
-            label: 'Marketplace',
+            icon: Icon(Icons.video_collection_outlined),
+            label: "Reels",
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.message), label: 'Messages'),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
-          BottomNavigationBarItem(icon: Icon(Icons.layers), label: 'Cards'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.storefront_outlined),
+            label: "Marketplace",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person_outline),
+            label: "Profile",
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildStorySection(BuildContext context) {
+    return Column(
+      children: [
+        const SizedBox(height: 10),
+        SizedBox(
+          height: 160,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: stories.length,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            separatorBuilder: (_, __) => const SizedBox(width: 8),
+            itemBuilder: (context, i) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => StoryViewScreen(
+                            imageUrl: stories[i]['storyImage']!,
+                            username: stories[i]['username']!,
+                            profileImage: stories[i]['profileImage']!,
+                          ),
+                    ),
+                  );
+                },
+                child: Container(
+                  width: 100,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    image: DecorationImage(
+                      image: NetworkImage(stories[i]['storyImage']!),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Container(
+                      margin: const EdgeInsets.all(6),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black54,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        stories[i]['username']!,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        const Divider(height: 24),
+      ],
+    );
+  }
+
+  Widget _buildPost(int index) {
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Card(
+        elevation: 2,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+              leading: const CircleAvatar(
+                backgroundImage: NetworkImage(
+                  'https://images.unsplash.com/photo-1570295999919-56ceb5ecca61',
+                ),
+              ),
+              title: Text('User $index'),
+              subtitle: const Text('2 hrs ago'),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Text('This is a post caption.'),
+            ),
+            Image.network(
+              'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e',
+              height: 200,
+              width: double.infinity,
+              fit: BoxFit.cover,
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: Row(
+                children: [
+                  Icon(Icons.thumb_up_alt_outlined, size: 20),
+                  SizedBox(width: 4),
+                  Text("Like"),
+                  SizedBox(width: 16),
+                  Icon(Icons.comment_outlined, size: 20),
+                  SizedBox(width: 4),
+                  Text("Comment"),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
