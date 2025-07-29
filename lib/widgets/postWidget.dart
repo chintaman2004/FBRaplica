@@ -1,4 +1,4 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, dead_code
 
 import 'package:fbreplica/post.dart';
 import 'package:flutter/material.dart';

@@ -15,5 +15,5 @@ class Post {
     List<String>? comments,
   }) : comments = comments ?? [];
 
-  get videoUrl => null;
+  Null get videoUrl => null;
 }

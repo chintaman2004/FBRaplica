@@ -1,10 +1,13 @@
+// ignore_for_file: strict_top_level_inference
+
 import 'package:flutter/material.dart';
 import 'post.dart';
-import 'postwidget.dart';
-import 'story_fullscreen.dart';
-import 'story_widget.dart';
 import 'stories.dart';
-import 'cardstack.dart'; // Make sure this import points to CardsStackPage
+import 'story_widget.dart';
+import 'story_fullscreen.dart';
+import 'cardstack.dart';
+import 'reels_page.dart';
+import 'widgets/postWidget.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -32,7 +35,7 @@ class _MainPageState extends State<MainPage> {
     Post(id: '3', username: 'Ali Khan', content: 'What a beautiful day!'),
   ];
 
-  void _onStoryTap(Story story) {
+  void _onStoryTap(story) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -43,16 +46,34 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _onAddPost() {
-    debugPrint("Add post pressed");
+    setState(() {
+      posts.insert(
+        0,
+        Post(
+          id: DateTime.now().toString(),
+          username: 'New User',
+          content: 'New post added!',
+          imageUrl: 'assets/images/sample1.jpg',
+        ),
+      );
+    });
   }
 
   void _onItemTapped(int index) {
-    if (index == 4) {
-      // Navigate to CardsStackPage
+    if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => ReelsPage(onBack: () {})),
+      ).then((_) {
+        setState(() => _selectedIndex = 0); // Return to main
+      });
+    } else if (index == 4) {
       Navigator.push(
         context,
         MaterialPageRoute(builder: (_) => const CardsStackPage()),
-      );
+      ).then((_) {
+        setState(() => _selectedIndex = 0); // Return to main
+      });
     } else {
       setState(() {
         _selectedIndex = index;
@@ -60,23 +81,13 @@ class _MainPageState extends State<MainPage> {
     }
   }
 
-  static const List<BottomNavigationBarItem> _bottomItems = [
-    BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-    BottomNavigationBarItem(icon: Icon(Icons.ondemand_video), label: 'Videos'),
-    BottomNavigationBarItem(icon: Icon(Icons.message), label: 'Messages'),
-    BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Menu'),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.view_carousel),
-      label: 'Cards',
-    ), // NEW TAB
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Facebook'),
+        title: const Text('Facebook', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.blue[800],
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           IconButton(
             icon: const Icon(Icons.add_circle_outline),
@@ -103,7 +114,16 @@ class _MainPageState extends State<MainPage> {
         selectedItemColor: Colors.blue[800],
         unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
-        items: _bottomItems,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.ondemand_video),
+            label: 'Reels',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.message), label: 'Messages'),
+          BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Menu'),
+          BottomNavigationBarItem(icon: Icon(Icons.layers), label: 'Cards'),
+        ],
       ),
     );
   }
