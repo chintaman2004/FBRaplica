@@ -1,3 +1,4 @@
+import 'package:fbreplica/post.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'file_picker_helper.dart';
@@ -8,6 +9,8 @@ class PostVidForm extends StatefulWidget {
     super.key,
     required String initialContent,
     required String initialVideo,
+    required void Function(Post post) onPostCreated,
+    required void Function(Map<String, dynamic> post) onPost,
   });
 
   @override

@@ -1,13 +1,11 @@
-// ignore_for_file: strict_top_level_inference
-
 import 'package:flutter/material.dart';
-import 'post.dart';
-import 'stories.dart';
-import 'story_widget.dart';
-import 'story_fullscreen.dart';
-import 'cardstack.dart';
-import 'reels_page.dart';
-import 'widgets/postWidget.dart';
+import 'package:fbreplica/post.dart';
+import 'package:fbreplica/widgets/postWidget.dart';
+import 'package:fbreplica/reels_page.dart';
+import 'package:fbreplica/cardstack.dart';
+import 'package:fbreplica/post_simple_form.dart';
+import 'package:fbreplica/post_pic_form.dart';
+import 'package:fbreplica/post_vid_form.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -18,112 +16,197 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   int _selectedIndex = 0;
+  List<Post> posts = [];
 
-  final List<Post> posts = [
-    Post(
-      id: '1',
-      username: 'John Doe',
-      content: 'Hello, this is my first post!',
-      imageUrl: 'assets/images/sample1.jpg',
-    ),
-    Post(
-      id: '2',
-      username: 'Jane Smith',
-      content: 'Loving this new app! ❤️',
-      imageUrl: 'assets/images/sample2.jpg',
-    ),
-    Post(id: '3', username: 'Ali Khan', content: 'What a beautiful day!'),
-  ];
+  List<Map<String, String>>? get storyList => null;
 
-  void _onStoryTap(story) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder:
-            (_) => StoryFullScreen(story: story, imageUrl: '', userName: ''),
+  void _onAddPost(Post post) {
+    setState(() {
+      posts.insert(0, post);
+    });
+  }
+
+  void _onAddButtonPressed() {
+    showModalBottomSheet(
+      context: context,
+      builder:
+          (context) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.text_fields),
+                title: const Text('Text Post'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => PostSimpleForm(
+                            initialContent: '',
+                            onPostCreated: (Post post) {},
+                            onPost: (Map<String, dynamic> post) {},
+                          ),
+                    ),
+                  );
+                  if (result is Post) _onAddPost(result);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.image),
+                title: const Text('Image Post'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => PostPicForm(
+                            initialContent: '',
+                            onPostCreated: (Post post) {},
+                            onPost: (Map<String, dynamic> post) {},
+                          ),
+                    ),
+                  );
+                  if (result is Post) _onAddPost(result);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.videocam),
+                title: const Text('Video Post'),
+                onTap: () async {
+                  Navigator.pop(context);
+                  final result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => PostVidForm(
+                            initialContent: '',
+                            initialVideo: '',
+                            onPostCreated: (Post post) {},
+                            onPost: (Map<String, dynamic> post) {},
+                          ),
+                    ),
+                  );
+                  if (result is Post) _onAddPost(result);
+                },
+              ),
+            ],
+          ),
+    );
+  }
+
+  Widget _buildStories(List<Map<String, String>> stories) {
+    return SizedBox(
+      height: 180,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: stories.length,
+        itemBuilder: (context, index) {
+          final story = stories[index];
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => FullScreenStory(imagePath: story['image']!),
+                ),
+              );
+            },
+            child: Container(
+              width: 120,
+              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: DecorationImage(
+                  image: AssetImage(story['image']!),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              alignment: Alignment.bottomLeft,
+              padding: const EdgeInsets.all(8),
+              child: Text(
+                story['username']!,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  backgroundColor: Colors.black45,
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 
-  void _onAddPost() {
-    setState(() {
-      posts.insert(
-        0,
-        Post(
-          id: DateTime.now().toString(),
-          username: 'New User',
-          content: 'New post added!',
-          imageUrl: 'assets/images/sample1.jpg',
-        ),
-      );
-    });
-  }
-
-  void _onItemTapped(int index) {
-    if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => ReelsPage(onBack: () {})),
-      ).then((_) {
-        setState(() => _selectedIndex = 0); // Return to main
-      });
-    } else if (index == 4) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => const CardsStackPage()),
-      ).then((_) {
-        setState(() => _selectedIndex = 0); // Return to main
-      });
-    } else {
-      setState(() {
-        _selectedIndex = index;
-      });
+  Widget _buildBody() {
+    switch (_selectedIndex) {
+      case 0:
+        return ListView(
+          children: [
+            _buildStories(storyList!),
+            const SizedBox(height: 10),
+            ...posts.map((post) => PostWidget(post: post)),
+          ],
+        );
+      case 1:
+        return ReelsPage(onBack: () {});
+      case 2:
+        return const CardsStackPage();
+      default:
+        return const Center(child: Text('Unknown Page'));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[200],
       appBar: AppBar(
         title: const Text('Facebook', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.blue[800],
-        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: Colors.blueAccent,
         actions: [
           IconButton(
             icon: const Icon(Icons.add_circle_outline),
-            onPressed: _onAddPost,
+            onPressed: _onAddButtonPressed,
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            StoryWidget(stories: demoStories, onStoryTap: _onStoryTap),
-            const SizedBox(height: 10),
-            ...posts.map((post) => PostWidget(post: post)),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _onAddPost,
-        backgroundColor: Colors.blue,
-        child: const Icon(Icons.add),
-      ),
+      body: _buildBody(),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue[800],
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
+        onTap: (index) => setState(() => _selectedIndex = index),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.ondemand_video),
+            icon: Icon(Icons.video_library),
             label: 'Reels',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.message), label: 'Messages'),
-          BottomNavigationBarItem(icon: Icon(Icons.menu), label: 'Menu'),
           BottomNavigationBarItem(icon: Icon(Icons.layers), label: 'Cards'),
         ],
+      ),
+    );
+  }
+}
+
+class FullScreenStory extends StatelessWidget {
+  final String imagePath;
+  const FullScreenStory({super.key, required this.imagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: GestureDetector(
+        onTap: () => Navigator.pop(context),
+        child: Center(
+          child: Image.asset(
+            imagePath,
+            fit: BoxFit.contain,
+            width: double.infinity,
+            height: double.infinity,
+          ),
+        ),
       ),
     );
   }

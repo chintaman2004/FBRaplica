@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'package:fbreplica/post.dart';
 import 'package:flutter/material.dart';
 import 'file_picker_helper.dart';
 import 'widgets/image_post_widget.dart';
@@ -9,6 +10,8 @@ class PostPicForm extends StatefulWidget {
     super.key,
     required String initialContent,
     String? initialImage,
+    required void Function(Post post) onPostCreated,
+    required void Function(Map<String, dynamic> post) onPost,
   });
 
   @override

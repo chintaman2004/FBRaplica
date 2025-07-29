@@ -1,8 +1,14 @@
+import 'package:fbreplica/post.dart';
 import 'package:flutter/material.dart';
 import 'widgets/text_post_widget.dart';
 
 class PostSimpleForm extends StatefulWidget {
-  const PostSimpleForm({super.key, required String initialContent});
+  const PostSimpleForm({
+    super.key,
+    required String initialContent,
+    required void Function(Post post) onPostCreated,
+    required void Function(Map<String, dynamic> post) onPost,
+  });
 
   @override
   State<PostSimpleForm> createState() => _PostSimpleFormState();
