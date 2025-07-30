@@ -21,6 +21,8 @@ class _PostWidgetState extends State<PostWidget> {
       _videoController = VideoPlayerController.asset(widget.post.videoUrl!)
         ..initialize().then((_) {
           setState(() {});
+          _videoController?.setLooping(true);
+          _videoController?.play(); // autoplay
         });
     }
   }
@@ -100,8 +102,8 @@ class _PostWidgetState extends State<PostWidget> {
               padding: const EdgeInsets.all(8.0),
               child: Text(post.content),
             ),
-          if (post.imageUrl != null && post.imageUrl!.isNotEmpty)
-            Image.asset(post.imageUrl!, fit: BoxFit.cover),
+          if (post.imageBytes != null)
+            Image.memory(post.imageBytes!, fit: BoxFit.cover),
           if (_videoController != null && _videoController!.value.isInitialized)
             AspectRatio(
               aspectRatio: _videoController!.value.aspectRatio,

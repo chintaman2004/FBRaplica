@@ -1,22 +1,25 @@
+import 'dart:typed_data';
+
 class Post {
   final String username;
   final String timestamp;
   final String content;
-  final String? imageUrl;
+  final Uint8List? imageBytes;
   final String? videoUrl;
+  final List<String> comments;
   bool isLiked;
-  List<String> comments;
 
   Post({
     required this.username,
     required this.timestamp,
     required this.content,
-    this.imageUrl,
+    this.imageBytes,
     this.videoUrl,
+    this.comments = const [],
     this.isLiked = false,
-    List<String>? comments,
     required String id,
+    required imageUrl,
     required String type,
     required mediaUrl,
-  }) : comments = comments ?? [];
+  });
 }
