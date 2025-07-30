@@ -1,5 +1,8 @@
-// stories.dart
+// ignore_for_file: deprecated_member_use
 
+import 'package:flutter/material.dart';
+
+// Model class
 class Story {
   final String imageUrl;
   final String userName;
@@ -7,7 +10,8 @@ class Story {
   Story({required this.imageUrl, required this.userName});
 }
 
-final List<Story> demoStories = [
+// List of sample stories
+final List<Story> storyList = [
   Story(imageUrl: 'https://picsum.photos/200/300?1', userName: 'Ahmed'),
   Story(imageUrl: 'https://picsum.photos/200/300?2', userName: 'Sara'),
   Story(imageUrl: 'https://picsum.photos/200/300?3', userName: 'Ali'),
@@ -29,3 +33,65 @@ final List<Story> demoStories = [
   Story(imageUrl: 'https://picsum.photos/200/300?19', userName: 'Imran'),
   Story(imageUrl: 'https://picsum.photos/200/300?20', userName: 'Aisha'),
 ];
+
+// Widget to display stories
+class StoriesWidget extends StatelessWidget {
+  const StoriesWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 170,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: storyList.length,
+        itemBuilder: (context, index) {
+          final story = storyList[index];
+          return GestureDetector(
+            onTap: () {
+              // Optional: Add functionality to open full screen story view
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Viewing ${story.userName}\'s story')),
+              );
+            },
+            child: Container(
+              width: 100,
+              margin: const EdgeInsets.symmetric(horizontal: 6),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                image: DecorationImage(
+                  image: NetworkImage(story.imageUrl),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: Stack(
+                alignment: Alignment.bottomLeft,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.4),
+                      borderRadius: const BorderRadius.only(
+                        bottomLeft: Radius.circular(12),
+                        bottomRight: Radius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      story.userName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}

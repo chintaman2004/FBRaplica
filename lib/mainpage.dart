@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'post_simple_form.dart';
-import 'post_pic_form.dart';
-import 'post_vid_form.dart';
-import 'reels_page.dart';
-import 'cardstack.dart';
-import 'post.dart';
-import 'stories.dart' show Story;
-import 'widgets/postwidget.dart';
+import 'package:fbreplica/stories.dart';
+import 'package:fbreplica/post.dart';
+import 'package:fbreplica/post_simple_form.dart' as simple;
+import 'package:fbreplica/post_pic_form.dart' as pic;
+import 'package:fbreplica/post_vid_form.dart' as vid;
+import 'package:fbreplica/widgets/postwidget.dart';
+import 'package:fbreplica/reels_page.dart';
+import 'package:fbreplica/cardstack.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -16,11 +16,11 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  List<Post> posts = [];
+  final List<Post> _posts = [];
 
   void _addPost(Post post) {
     setState(() {
-      posts.insert(0, post);
+      _posts.insert(0, post);
     });
   }
 
@@ -28,7 +28,8 @@ class _MainPageState extends State<MainPage> {
     showModalBottomSheet(
       context: context,
       builder:
-          (_) => Wrap(
+          (_) => Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
                 leading: const Icon(Icons.text_fields),
@@ -39,11 +40,9 @@ class _MainPageState extends State<MainPage> {
                     context,
                     MaterialPageRoute(
                       builder:
-                          (_) => PostSimpleForm(
+                          (_) => simple.PostSimpleForm(
                             onSubmit: _addPost,
                             initialContent: '',
-                            onPostCreated: (Post post) {},
-                            onPost: (Map<String, dynamic> post) {},
                           ),
                     ),
                   );
@@ -57,13 +56,7 @@ class _MainPageState extends State<MainPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder:
-                          (_) => PostPicForm(
-                            onSubmit: _addPost,
-                            initialContent: '',
-                            onPostCreated: (Post post) {},
-                            onPost: (Map<String, dynamic> post) {},
-                          ),
+                      builder: (_) => pic.PostPicForm(onSubmit: _addPost),
                     ),
                   );
                 },
@@ -77,7 +70,7 @@ class _MainPageState extends State<MainPage> {
                     context,
                     MaterialPageRoute(
                       builder:
-                          (_) => PostVidForm(
+                          (_) => vid.PostVidForm(
                             onSubmit: _addPost,
                             initialContent: '',
                             initialVideo: '',
@@ -95,30 +88,26 @@ class _MainPageState extends State<MainPage> {
 
   int _currentIndex = 0;
 
-  final List<Widget> _tabs = [];
-
-  List<Story>? get storyList => null;
+  final List<Widget> _pages = [];
 
   @override
   void initState() {
     super.initState();
-    _tabs.add(_buildHome());
-    _tabs.add(
-      ReelsPage(
-        onBack: () {
-          setState(() => _currentIndex = 0);
-        },
-      ),
-    );
-    _tabs.add(const CardsStackPage());
+    _pages.addAll([
+      _buildMainFeed(),
+      ReelsPage(onBack: () {}),
+      const CardsStackPage(),
+    ]);
   }
 
-  Widget _buildHome() {
+  Widget _buildMainFeed() {
     return ListView(
       children: [
-        _buildStories(storyList!),
-        const SizedBox(height: 10),
-        ...posts.map((post) => PostWidget(post: post)),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: StoriesWidget(), // Use your existing stories.dart here
+        ),
+        for (final post in _posts) PostWidget(post: post),
       ],
     );
   }
@@ -126,80 +115,29 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        backgroundColor: Colors.blue[800],
         title: const Text('Facebook', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.blue[900],
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add, color: Colors.white),
-            onPressed: _showPostOptions,
-          ),
+          IconButton(icon: const Icon(Icons.add), onPressed: _showPostOptions),
         ],
       ),
-      body: _tabs[_currentIndex],
+      body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
-        onTap: (value) {
-          setState(() => _currentIndex = value);
-        },
-        selectedItemColor: Colors.blue[800],
+        onTap: (i) => setState(() => _currentIndex = i),
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
             icon: Icon(Icons.video_collection),
-            label: "Reels",
+            label: 'Reels',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.layers), label: "Cards"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.view_carousel),
+            label: 'Cards',
+          ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildStories(List<Story> stories) {
-    return SizedBox(
-      height: 170,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: stories.length,
-        itemBuilder: (context, index) {
-          final story = stories[index];
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: () {
-                // Implement story tap logic if needed
-              },
-              child: Container(
-                width: 100,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(story.imageUrl),
-                    fit: BoxFit.cover,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: const BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(12),
-                        bottomRight: Radius.circular(12),
-                      ),
-                    ),
-                    child: Text(
-                      story.userName,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
       ),
     );
   }

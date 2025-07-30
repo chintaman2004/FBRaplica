@@ -1,6 +1,6 @@
-import 'package:fbreplica/post.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:fbreplica/post.dart';
 
 class PostWidget extends StatefulWidget {
   final Post post;
@@ -17,7 +17,7 @@ class _PostWidgetState extends State<PostWidget> {
   @override
   void initState() {
     super.initState();
-    if (widget.post.videoUrl != null) {
+    if (widget.post.videoUrl != null && widget.post.videoUrl!.isNotEmpty) {
       _videoController = VideoPlayerController.asset(widget.post.videoUrl!)
         ..initialize().then((_) {
           setState(() {});
@@ -38,40 +38,48 @@ class _PostWidgetState extends State<PostWidget> {
   }
 
   void openComments(BuildContext context) {
-    TextEditingController commentController = TextEditingController();
+    final commentController = TextEditingController();
+
     showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (_) {
-        return Column(
-          children: [
-            Expanded(
-              child: ListView.builder(
-                itemCount: widget.post.comments.length,
-                itemBuilder:
-                    (_, index) =>
-                        ListTile(title: Text(widget.post.comments[index])),
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView.builder(
+                  itemCount: widget.post.comments.length,
+                  itemBuilder: (_, index) {
+                    return ListTile(title: Text(widget.post.comments[index]));
+                  },
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: Row(
-                children: [
-                  Expanded(child: TextField(controller: commentController)),
-                  IconButton(
-                    icon: const Icon(Icons.send),
-                    onPressed: () {
-                      if (commentController.text.isNotEmpty) {
-                        setState(() {
-                          widget.post.comments.add(commentController.text);
-                        });
-                        Navigator.pop(context);
-                      }
-                    },
-                  ),
-                ],
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Row(
+                  children: [
+                    Expanded(child: TextField(controller: commentController)),
+                    IconButton(
+                      icon: const Icon(Icons.send),
+                      onPressed: () {
+                        final text = commentController.text.trim();
+                        if (text.isNotEmpty) {
+                          setState(() {
+                            widget.post.comments.add(text);
+                          });
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         );
       },
     );
@@ -80,21 +88,19 @@ class _PostWidgetState extends State<PostWidget> {
   @override
   Widget build(BuildContext context) {
     final post = widget.post;
+
     return Card(
       margin: const EdgeInsets.all(8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ListTile(
-            title: Text(post.username),
-            subtitle: const Text("Just now"),
-          ),
+          ListTile(title: Text(post.username), subtitle: Text(post.timestamp)),
           if (post.content.isNotEmpty)
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(post.content),
             ),
-          if (post.imageUrl != null)
+          if (post.imageUrl != null && post.imageUrl!.isNotEmpty)
             Image.asset(post.imageUrl!, fit: BoxFit.cover),
           if (_videoController != null && _videoController!.value.isInitialized)
             AspectRatio(

@@ -47,6 +47,9 @@ class _PostVidFormState extends State<PostVidForm> {
       content: _contentController.text.trim(),
       imageUrl: null,
       videoUrl: _pickedVideo?.file?.path ?? '',
+      type: '',
+      timestamp: '',
+      mediaUrl: null,
     );
 
     Navigator.pop(context, newPost); // Return Post model to mainpage.dart

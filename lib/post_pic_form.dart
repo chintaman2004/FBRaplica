@@ -1,17 +1,13 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
-import 'package:fbreplica/post.dart';
-import 'file_picker_helper.dart';
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
+import 'post.dart';
 
 class PostPicForm extends StatefulWidget {
-  const PostPicForm({
-    super.key,
-    required void Function(Post post) onSubmit,
-    required String initialContent,
-    required Null Function(Post post) onPostCreated,
-    required Null Function(Map<String, dynamic> post) onPost,
-  });
+  final Function(Post) onSubmit;
+  final void Function(Post)? onPostCreated;
+
+  const PostPicForm({super.key, required this.onSubmit, this.onPostCreated});
 
   @override
   State<PostPicForm> createState() => _PostPicFormState();
@@ -19,70 +15,71 @@ class PostPicForm extends StatefulWidget {
 
 class _PostPicFormState extends State<PostPicForm> {
   final TextEditingController _captionController = TextEditingController();
-  PickedFile? _pickedFile;
+  File? _selectedImage;
 
-  void _pickImage() async {
-    final result = await FilePickerHelper.pickImage();
+  Future<void> _pickImage() async {
+    final pickedFile = await ImagePicker().pickImage(
+      source: ImageSource.gallery,
+    );
 
-    if (result != null) {
+    if (pickedFile != null) {
       setState(() {
-        _pickedFile = result;
+        _selectedImage = File(pickedFile.path);
       });
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("No image selected")));
     }
   }
 
   void _submitPost() {
-    if (_pickedFile == null) {
+    final caption = _captionController.text.trim();
+    if (_selectedImage == null) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("Please select an image")));
       return;
     }
 
-    final newPost = Post(
-      id: DateTime.now().toString(),
-      username: "You",
-      content: _captionController.text.trim(),
-      imageUrl: _pickedFile!.file?.path,
+    final post = Post(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      username: 'Ahmed', // Replace dynamically if needed
+      timestamp: DateTime.now().toString(),
+      type: 'image',
+      content: caption,
+      mediaUrl: _selectedImage!.path, // Local file path
+      imageUrl: _selectedImage!.path,
       videoUrl: null,
+      isLiked: false,
+      comments: [],
     );
 
-    Navigator.pop(context, newPost); // Return Post to mainpage.dart
+    widget.onSubmit(post);
+    widget.onPostCreated?.call(post);
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Create Image Post")),
+      appBar: AppBar(title: const Text('Create Image Post')),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            if (_selectedImage != null)
+              Image.file(_selectedImage!, height: 200),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.photo),
+              label: const Text('Pick Image'),
+              onPressed: _pickImage,
+            ),
+            const SizedBox(height: 16),
             TextField(
               controller: _captionController,
               decoration: const InputDecoration(
-                labelText: 'Write a caption...',
-                border: OutlineInputBorder(),
+                hintText: 'Say something about the image...',
               ),
-              maxLines: 2,
             ),
             const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _pickImage,
-              icon: const Icon(Icons.image),
-              label: const Text("Pick Image"),
-            ),
-            if (_pickedFile != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 12),
-                child: Text("📷 Selected: ${_pickedFile!.name}"),
-              ),
-            const Spacer(),
-            ElevatedButton(onPressed: _submitPost, child: const Text("Post")),
+            ElevatedButton(onPressed: _submitPost, child: const Text('Post')),
           ],
         ),
       ),

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:fbreplica/post.dart';
+import 'post.dart';
 
 class PostSimpleForm extends StatefulWidget {
+  final Function(Post) onSubmit;
+  final String initialContent;
+  final void Function(Post)? onPostCreated;
+  final void Function(Map<String, dynamic>)? onPost;
+
   const PostSimpleForm({
     super.key,
-    required void Function(Post post) onSubmit,
-    required String initialContent,
-    required Null Function(Post post) onPostCreated,
-    required Null Function(Map<String, dynamic> post) onPost,
+    required this.onSubmit,
+    required this.initialContent,
+    this.onPostCreated,
+    this.onPost,
   });
 
   @override
@@ -19,43 +24,49 @@ class _PostSimpleFormState extends State<PostSimpleForm> {
 
   void _submitPost() {
     final content = _controller.text.trim();
+    if (content.isEmpty) return;
 
-    if (content.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Please enter some text")));
-      return;
-    }
-
-    final newPost = Post(
-      id: DateTime.now().toString(),
-      username: "You",
+    final post = Post(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      username: 'Ahmed', // You can replace with logged-in username
+      timestamp: DateTime.now().toString(),
+      type: 'text',
       content: content,
+      mediaUrl: null,
       imageUrl: null,
       videoUrl: null,
+      isLiked: false,
+      comments: [],
     );
 
-    Navigator.pop(context, newPost); // return Post to mainpage.dart
+    widget.onSubmit(post);
+    widget.onPostCreated?.call(post); // optional callback
+    Navigator.pop(context);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _controller.text = widget.initialContent;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Create Text Post")),
+      appBar: AppBar(title: const Text('Create Text Post')),
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
               controller: _controller,
               maxLines: 6,
               decoration: const InputDecoration(
-                labelText: "What's on your mind?",
-                border: OutlineInputBorder(),
+                hintText: 'What\'s on your mind?',
               ),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(onPressed: _submitPost, child: const Text("Post")),
+            ElevatedButton(onPressed: _submitPost, child: const Text('Post')),
           ],
         ),
       ),
