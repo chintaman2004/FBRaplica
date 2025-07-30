@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:fbreplica/stories.dart';
-import 'package:fbreplica/post.dart';
-import 'package:fbreplica/post_simple_form.dart' as simple;
-import 'package:fbreplica/post_pic_form.dart' as pic;
-import 'package:fbreplica/post_vid_form.dart' as vid;
-import 'package:fbreplica/widgets/postwidget.dart';
-import 'package:fbreplica/reels_page.dart';
-import 'package:fbreplica/cardstack.dart';
+import 'post.dart';
+import 'post_simple_form.dart';
+import 'post_pic_form.dart';
+import 'post_vid_form.dart';
+import 'widgets/postwidget.dart';
+import 'reels_page.dart';
+import 'stories.dart';
+import 'marketplace.dart';
+import 'profilepage.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -16,11 +17,12 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  final List<Post> _posts = [];
+  int _selectedIndex = 0;
+  List<Post> posts = [];
 
   void _addPost(Post post) {
     setState(() {
-      _posts.insert(0, post);
+      posts.insert(0, post);
     });
   }
 
@@ -28,8 +30,7 @@ class _MainPageState extends State<MainPage> {
     showModalBottomSheet(
       context: context,
       builder:
-          (_) => Column(
-            mainAxisSize: MainAxisSize.min,
+          (context) => Wrap(
             children: [
               ListTile(
                 leading: const Icon(Icons.text_fields),
@@ -40,7 +41,7 @@ class _MainPageState extends State<MainPage> {
                     context,
                     MaterialPageRoute(
                       builder:
-                          (_) => simple.PostSimpleForm(
+                          (_) => PostSimpleForm(
                             onSubmit: _addPost,
                             initialContent: '',
                           ),
@@ -56,13 +57,13 @@ class _MainPageState extends State<MainPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => pic.PostPicForm(onSubmit: _addPost),
+                      builder: (_) => PostPicForm(onSubmit: _addPost),
                     ),
                   );
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.video_library),
+                leading: const Icon(Icons.videocam),
                 title: const Text('Video Post'),
                 onTap: () {
                   Navigator.pop(context);
@@ -70,7 +71,7 @@ class _MainPageState extends State<MainPage> {
                     context,
                     MaterialPageRoute(
                       builder:
-                          (_) => vid.PostVidForm(
+                          (_) => PostVidForm(
                             onSubmit: _addPost,
                             initialContent: '',
                             initialVideo: '',
@@ -86,57 +87,77 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  int _currentIndex = 0;
-
-  final List<Widget> _pages = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _pages.addAll([
-      _buildMainFeed(),
-      ReelsPage(onBack: () {}),
-      const CardsStackPage(),
-    ]);
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
-  Widget _buildMainFeed() {
-    return ListView(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: StoriesWidget(), // Use your existing stories.dart here
-        ),
-        for (final post in _posts) PostWidget(post: post),
-      ],
-    );
+  Widget _buildBody() {
+    switch (_selectedIndex) {
+      case 0:
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: SizedBox(
+                height: 180,
+                child: StoriesWidget(), // Use your custom story widget
+              ),
+            ),
+            Expanded(
+              child:
+                  posts.isEmpty
+                      ? const Center(child: Text('No posts yet'))
+                      : ListView.builder(
+                        itemCount: posts.length,
+                        itemBuilder:
+                            (context, index) => PostWidget(post: posts[index]),
+                      ),
+            ),
+          ],
+        );
+      case 1:
+        return ReelsPage(onBack: () {});
+      case 2:
+        return MarketplacePage();
+      case 3:
+        return ProfilePage();
+      default:
+        return const Center(child: Text('Unknown tab'));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text('Facebook', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.blue[900],
+        backgroundColor: Colors.blue[800],
         actions: [
-          IconButton(icon: const Icon(Icons.add), onPressed: _showPostOptions),
+          IconButton(
+            icon: const Icon(Icons.add, color: Colors.white),
+            onPressed: _showPostOptions,
+          ),
         ],
       ),
-      body: _pages[_currentIndex],
+      body: _buildBody(),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (i) => setState(() => _currentIndex = i),
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blue[800],
+        unselectedItemColor: Colors.grey,
+        onTap: _onItemTapped,
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.video_collection),
+            icon: Icon(Icons.video_library),
             label: 'Reels',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.view_carousel),
-            label: 'Cards',
+            icon: Icon(Icons.store),
+            label: 'Marketplace',
           ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
       ),
     );
