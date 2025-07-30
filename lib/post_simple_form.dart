@@ -1,13 +1,13 @@
-import 'package:fbreplica/post.dart';
 import 'package:flutter/material.dart';
-import 'widgets/text_post_widget.dart';
+import 'package:fbreplica/post.dart';
 
 class PostSimpleForm extends StatefulWidget {
   const PostSimpleForm({
     super.key,
+    required void Function(Post post) onSubmit,
     required String initialContent,
-    required void Function(Post post) onPostCreated,
-    required void Function(Map<String, dynamic> post) onPost,
+    required Null Function(Post post) onPostCreated,
+    required Null Function(Map<String, dynamic> post) onPost,
   });
 
   @override
@@ -19,6 +19,7 @@ class _PostSimpleFormState extends State<PostSimpleForm> {
 
   void _submitPost() {
     final content = _controller.text.trim();
+
     if (content.isEmpty) {
       ScaffoldMessenger.of(
         context,
@@ -26,14 +27,15 @@ class _PostSimpleFormState extends State<PostSimpleForm> {
       return;
     }
 
-    final post = TextPostWidget(
-      username: 'You',
-      timestamp: 'Just now',
+    final newPost = Post(
+      id: DateTime.now().toString(),
+      username: "You",
       content: content,
-      profileImage: 'assets/images/ahc.jpg', // Make sure this asset exists
+      imageUrl: null,
+      videoUrl: null,
     );
 
-    Navigator.pop(context, post); // 🔁 Return to main page with post
+    Navigator.pop(context, newPost); // return Post to mainpage.dart
   }
 
   @override

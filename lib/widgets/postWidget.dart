@@ -1,7 +1,6 @@
-// ignore_for_file: file_names, dead_code
-
 import 'package:fbreplica/post.dart';
 import 'package:flutter/material.dart';
+import 'package:video_player/video_player.dart';
 
 class PostWidget extends StatefulWidget {
   final Post post;
@@ -13,6 +12,25 @@ class PostWidget extends StatefulWidget {
 }
 
 class _PostWidgetState extends State<PostWidget> {
+  VideoPlayerController? _videoController;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.post.videoUrl != null) {
+      _videoController = VideoPlayerController.asset(widget.post.videoUrl!)
+        ..initialize().then((_) {
+          setState(() {});
+        });
+    }
+  }
+
+  @override
+  void dispose() {
+    _videoController?.dispose();
+    super.dispose();
+  }
+
   void toggleLike() {
     setState(() {
       widget.post.isLiked = !widget.post.isLiked;
@@ -42,10 +60,12 @@ class _PostWidgetState extends State<PostWidget> {
                   IconButton(
                     icon: const Icon(Icons.send),
                     onPressed: () {
-                      setState(() {
-                        widget.post.comments.add(commentController.text);
-                      });
-                      Navigator.pop(context);
+                      if (commentController.text.isNotEmpty) {
+                        setState(() {
+                          widget.post.comments.add(commentController.text);
+                        });
+                        Navigator.pop(context);
+                      }
                     },
                   ),
                 ],
@@ -69,14 +89,18 @@ class _PostWidgetState extends State<PostWidget> {
             title: Text(post.username),
             subtitle: const Text("Just now"),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(post.content),
-          ),
+          if (post.content.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(post.content),
+            ),
           if (post.imageUrl != null)
             Image.asset(post.imageUrl!, fit: BoxFit.cover),
-          if (post.videoUrl != null)
-            Container(height: 200, color: Colors.black), // For now
+          if (_videoController != null && _videoController!.value.isInitialized)
+            AspectRatio(
+              aspectRatio: _videoController!.value.aspectRatio,
+              child: VideoPlayer(_videoController!),
+            ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [

@@ -1,16 +1,17 @@
-import 'package:fbreplica/post.dart';
-import 'package:flutter/foundation.dart';
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
+import 'package:fbreplica/post.dart';
 import 'file_picker_helper.dart';
-import 'widgets/video_post_widget.dart';
 
 class PostVidForm extends StatefulWidget {
   const PostVidForm({
     super.key,
+    required void Function(Post post) onSubmit,
     required String initialContent,
     required String initialVideo,
-    required void Function(Post post) onPostCreated,
-    required void Function(Map<String, dynamic> post) onPost,
+    required Null Function(Post post) onPostCreated,
+    required Null Function(Map<String, dynamic> post) onPost,
   });
 
   @override
@@ -26,7 +27,9 @@ class _PostVidFormState extends State<PostVidForm> {
     if (video != null) {
       setState(() => _pickedVideo = video);
     } else {
-      if (kDebugMode) print("⚠️ No video selected");
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('No video selected')));
     }
   }
 
@@ -38,17 +41,15 @@ class _PostVidFormState extends State<PostVidForm> {
       return;
     }
 
-    final post = VideoPostWidget(
+    final newPost = Post(
+      id: DateTime.now().toString(),
       username: 'You',
-      timestamp: 'Just now',
-      content: _contentController.text,
-      profileImage: 'assets/images/ahc.jpg',
+      content: _contentController.text.trim(),
+      imageUrl: null,
       videoUrl: _pickedVideo?.file?.path ?? '',
-      videoBytes: _pickedVideo?.bytes,
-      postImage: '',
     );
 
-    Navigator.pop(context, post);
+    Navigator.pop(context, newPost); // Return Post model to mainpage.dart
   }
 
   @override
@@ -63,6 +64,7 @@ class _PostVidFormState extends State<PostVidForm> {
               controller: _contentController,
               decoration: const InputDecoration(
                 labelText: 'Write something...',
+                border: OutlineInputBorder(),
               ),
               maxLines: 2,
             ),

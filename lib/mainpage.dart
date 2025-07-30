@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:fbreplica/post.dart';
-import 'package:fbreplica/widgets/postWidget.dart';
-import 'package:fbreplica/reels_page.dart';
-import 'package:fbreplica/cardstack.dart';
-import 'package:fbreplica/post_simple_form.dart';
-import 'package:fbreplica/post_pic_form.dart';
-import 'package:fbreplica/post_vid_form.dart';
+import 'post_simple_form.dart';
+import 'post_pic_form.dart';
+import 'post_vid_form.dart';
+import 'reels_page.dart';
+import 'cardstack.dart';
+import 'post.dart';
+import 'stories.dart' show Story;
+import 'widgets/postwidget.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -15,72 +16,69 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
   List<Post> posts = [];
 
-  List<Map<String, String>>? get storyList => null;
-
-  void _onAddPost(Post post) {
+  void _addPost(Post post) {
     setState(() {
       posts.insert(0, post);
     });
   }
 
-  void _onAddButtonPressed() {
+  void _showPostOptions() {
     showModalBottomSheet(
       context: context,
       builder:
-          (context) => Column(
-            mainAxisSize: MainAxisSize.min,
+          (_) => Wrap(
             children: [
               ListTile(
                 leading: const Icon(Icons.text_fields),
                 title: const Text('Text Post'),
-                onTap: () async {
+                onTap: () {
                   Navigator.pop(context);
-                  final result = await Navigator.push(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder:
                           (_) => PostSimpleForm(
+                            onSubmit: _addPost,
                             initialContent: '',
                             onPostCreated: (Post post) {},
                             onPost: (Map<String, dynamic> post) {},
                           ),
                     ),
                   );
-                  if (result is Post) _onAddPost(result);
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.image),
                 title: const Text('Image Post'),
-                onTap: () async {
+                onTap: () {
                   Navigator.pop(context);
-                  final result = await Navigator.push(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder:
                           (_) => PostPicForm(
+                            onSubmit: _addPost,
                             initialContent: '',
                             onPostCreated: (Post post) {},
                             onPost: (Map<String, dynamic> post) {},
                           ),
                     ),
                   );
-                  if (result is Post) _onAddPost(result);
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.videocam),
+                leading: const Icon(Icons.video_library),
                 title: const Text('Video Post'),
-                onTap: () async {
+                onTap: () {
                   Navigator.pop(context);
-                  final result = await Navigator.push(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder:
                           (_) => PostVidForm(
+                            onSubmit: _addPost,
                             initialContent: '',
                             initialVideo: '',
                             onPostCreated: (Post post) {},
@@ -88,7 +86,6 @@ class _MainPageState extends State<MainPage> {
                           ),
                     ),
                   );
-                  if (result is Post) _onAddPost(result);
                 },
               ),
             ],
@@ -96,67 +93,34 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Widget _buildStories(List<Map<String, String>> stories) {
-    return SizedBox(
-      height: 180,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: stories.length,
-        itemBuilder: (context, index) {
-          final story = stories[index];
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => FullScreenStory(imagePath: story['image']!),
-                ),
-              );
-            },
-            child: Container(
-              width: 120,
-              margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                image: DecorationImage(
-                  image: AssetImage(story['image']!),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              alignment: Alignment.bottomLeft,
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                story['username']!,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  backgroundColor: Colors.black45,
-                ),
-              ),
-            ),
-          );
+  int _currentIndex = 0;
+
+  final List<Widget> _tabs = [];
+
+  List<Story>? get storyList => null;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabs.add(_buildHome());
+    _tabs.add(
+      ReelsPage(
+        onBack: () {
+          setState(() => _currentIndex = 0);
         },
       ),
     );
+    _tabs.add(const CardsStackPage());
   }
 
-  Widget _buildBody() {
-    switch (_selectedIndex) {
-      case 0:
-        return ListView(
-          children: [
-            _buildStories(storyList!),
-            const SizedBox(height: 10),
-            ...posts.map((post) => PostWidget(post: post)),
-          ],
-        );
-      case 1:
-        return ReelsPage(onBack: () {});
-      case 2:
-        return const CardsStackPage();
-      default:
-        return const Center(child: Text('Unknown Page'));
-    }
+  Widget _buildHome() {
+    return ListView(
+      children: [
+        _buildStories(storyList!),
+        const SizedBox(height: 10),
+        ...posts.map((post) => PostWidget(post: post)),
+      ],
+    );
   }
 
   @override
@@ -164,49 +128,78 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
+        backgroundColor: Colors.blue[800],
         title: const Text('Facebook', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.blueAccent,
         actions: [
           IconButton(
-            icon: const Icon(Icons.add_circle_outline),
-            onPressed: _onAddButtonPressed,
+            icon: const Icon(Icons.add, color: Colors.white),
+            onPressed: _showPostOptions,
           ),
         ],
       ),
-      body: _buildBody(),
+      body: _tabs[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: (index) => setState(() => _selectedIndex = index),
+        currentIndex: _currentIndex,
+        onTap: (value) {
+          setState(() => _currentIndex = value);
+        },
+        selectedItemColor: Colors.blue[800],
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(
-            icon: Icon(Icons.video_library),
-            label: 'Reels',
+            icon: Icon(Icons.video_collection),
+            label: "Reels",
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.layers), label: 'Cards'),
+          BottomNavigationBarItem(icon: Icon(Icons.layers), label: "Cards"),
         ],
       ),
     );
   }
-}
 
-class FullScreenStory extends StatelessWidget {
-  final String imagePath;
-  const FullScreenStory({super.key, required this.imagePath});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: GestureDetector(
-        onTap: () => Navigator.pop(context),
-        child: Center(
-          child: Image.asset(
-            imagePath,
-            fit: BoxFit.contain,
-            width: double.infinity,
-            height: double.infinity,
-          ),
-        ),
+  Widget _buildStories(List<Story> stories) {
+    return SizedBox(
+      height: 170,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: stories.length,
+        itemBuilder: (context, index) {
+          final story = stories[index];
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: () {
+                // Implement story tap logic if needed
+              },
+              child: Container(
+                width: 100,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(story.imageUrl),
+                    fit: BoxFit.cover,
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: const BoxDecoration(
+                      color: Colors.black54,
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(12),
+                        bottomRight: Radius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      story.userName,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }

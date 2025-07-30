@@ -19,7 +19,6 @@ class VideoPostWidget extends StatefulWidget {
     required this.profileImage,
     required this.videoUrl,
     this.videoBytes,
-    required String postImage,
   });
 
   @override
@@ -33,12 +32,14 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
   void initState() {
     super.initState();
 
-    if (!kIsWeb && widget.videoUrl.isNotEmpty) {
+    if (!kIsWeb &&
+        widget.videoUrl.isNotEmpty &&
+        File(widget.videoUrl).existsSync()) {
       _ctl = VideoPlayerController.file(File(widget.videoUrl))
         ..initialize().then((_) {
           setState(() {});
-          _ctl!.setLooping(true);
-          _ctl!.play();
+          _ctl?.setLooping(true);
+          _ctl?.play();
         });
     }
   }
@@ -65,7 +66,7 @@ class _VideoPostWidgetState extends State<VideoPostWidget> {
           style: const TextStyle(color: Colors.grey),
         ),
       );
-    } else if (_ctl != null && _ctl!.value.isInitialized) {
+    } else if (_ctl?.value.isInitialized == true) {
       videoContent = AspectRatio(
         aspectRatio: _ctl!.value.aspectRatio,
         child: VideoPlayer(_ctl!),

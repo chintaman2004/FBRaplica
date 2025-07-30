@@ -1,17 +1,16 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:fbreplica/post.dart';
 import 'package:flutter/material.dart';
+import 'package:fbreplica/post.dart';
 import 'file_picker_helper.dart';
-import 'widgets/image_post_widget.dart';
 
 class PostPicForm extends StatefulWidget {
   const PostPicForm({
     super.key,
+    required void Function(Post post) onSubmit,
     required String initialContent,
-    String? initialImage,
-    required void Function(Post post) onPostCreated,
-    required void Function(Map<String, dynamic> post) onPost,
+    required Null Function(Post post) onPostCreated,
+    required Null Function(Map<String, dynamic> post) onPost,
   });
 
   @override
@@ -44,16 +43,15 @@ class _PostPicFormState extends State<PostPicForm> {
       return;
     }
 
-    final post = ImagePostWidget(
+    final newPost = Post(
+      id: DateTime.now().toString(),
       username: "You",
-      timestamp: "Just now",
       content: _captionController.text.trim(),
-      profileImage: 'assets/images/ahc.jpg',
-      postImage: _pickedFile!.file?.path,
-      postBytes: _pickedFile!.bytes,
+      imageUrl: _pickedFile!.file?.path,
+      videoUrl: null,
     );
 
-    Navigator.pop(context, post);
+    Navigator.pop(context, newPost); // Return Post to mainpage.dart
   }
 
   @override
